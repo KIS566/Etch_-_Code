@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Etch & Code Pro | Premium Website Builder</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,600;1,700;1,800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box;}
+        body{font-family:'Inter',sans-serif;background:#080605;color:#FDFAF6;height:100vh;overflow:hidden;display:flex;padding:1rem;gap:1rem;}
+        @media(max-width:900px){body{flex-direction:column;overflow-y:auto;height:auto;padding:0.5rem;gap:0.5rem;}}
+        ::-webkit-scrollbar{width:4px;}
+        ::-webkit-scrollbar-track{background:transparent;}
+        ::-webkit-scrollbar-thumb{background:#D4AF37;border-radius:10px;}
+        
+        .chat-panel{width:500px;min-width:500px;background:#0D0A08;border-radius:24px;border:1px solid rgba(253,250,246,0.06);display:flex;flex-direction:column;overflow:hidden;box-shadow:0 25px 80px rgba(0,0,0,0.8);}
+        @media(max-width:900px){.chat-panel{width:100%;min-width:100%;height:50vh;}}
+        
+        .chat-header{padding:1.2rem 1.5rem;border-bottom:1px solid rgba(253,250,246,0.06);display:flex;align-items:center;gap:0.8rem;background:rgba(212,175,55,0.02);flex-shrink:0;}
+        .ai-avatar{width:52px;height:52px;background:linear-gradient(135deg,#C8A882,#D4AF37);border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;color:#0A1F1A;animation:float 3s ease-in-out infinite;box-shadow:0 8px 30px rgba(212,175,55,0.3);position:relative;}
+        .ai-avatar .dot{position:absolute;bottom:-2px;right:-2px;width:14px;height:14px;background:#4ADE80;border-radius:50%;border:2px solid #0D0A08;animation:pulse-dot 2s infinite;}
+        @keyframes float{0%,100%{transform:translateY(0);}50%{transform:translateY(-6px);}}
+        @keyframes pulse-dot{0%,100%{box-shadow:0 0 0 0 rgba(74,222,128,0.6);}50%{box-shadow:0 0 0 10px rgba(74,222,128,0);}}
+        .header-info h3{font-size:0.95rem;font-weight:700;}
+        .header-info p{font-size:0.7rem;color:#4ADE80;letter-spacing:0.5px;}
+        .header-actions{margin-left:auto;display:flex;gap:0.4rem;}
+        .header-btn{background:transparent;border:1px solid rgba(253,250,246,0.06);color:#A09890;padding:0.3rem 0.8rem;border-radius:30px;font-size:0.6rem;cursor:pointer;transition:all 0.3s;font-family:'Inter',sans-serif;font-weight:600;}
+        .header-btn:hover{border-color:#D4AF37;color:#D4AF37;}
+        
+        .progress-wrap{padding:0.5rem 1.5rem 0;flex-shrink:0;}
+        .progress-bar{height:3px;background:rgba(253,250,246,0.06);border-radius:3px;overflow:hidden;}
+        .progress-fill{height:100%;background:linear-gradient(90deg,#C8A882,#D4AF37);border-radius:3px;transition:width 0.6s cubic-bezier(0.34,1.56,0.64,1);width:0%;}
+        .step-label{display:flex;justify-content:space-between;font-size:0.6rem;color:#706860;margin-top:0.2rem;opacity:0.6;letter-spacing:0.5px;}
+        
+        .chat-messages{flex:1;overflow-y:auto;padding:1.2rem 1.2rem 0.5rem;display:flex;flex-direction:column;gap:0.8rem;}
+        .msg{display:flex;gap:0.7rem;animation:slideUp 0.4s cubic-bezier(0.34,1.56,0.64,1);}
+        @keyframes slideUp{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
+        .msg.user{flex-direction:row-reverse;}
+        .msg-avatar{width:32px;height:32px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:0.6rem;font-weight:700;flex-shrink:0;}
+        .msg.bot .msg-avatar{background:rgba(212,175,55,0.12);color:#D4AF37;}
+        .msg.user .msg-avatar{background:#D4AF37;color:#0A1F1A;}
+        .msg-bubble{max-width:82%;padding:0.8rem 1.1rem;border-radius:16px;font-size:0.85rem;line-height:1.7;}
+        .msg.bot .msg-bubble{background:#14100D;border-bottom-left-radius:4px;}
+        .msg.user .msg-bubble{background:linear-gradient(135deg,#D4AF37,#C8A882);color:#0A1F1A;border-bottom-right-radius:4px;font-weight:600;}
+        
+        .quick-row{display:flex;flex-wrap:wrap;gap:0.4rem;margin-top:0.7rem;}
+        .quick-btn{background:#080605;border:1px solid rgba(253,250,246,0.06);padding:0.4rem 1rem;border-radius:30px;font-size:0.7rem;font-weight:600;cursor:pointer;color:#A09890;transition:all 0.25s;font-family:'Inter',sans-serif;}
+        .quick-btn:hover{border-color:#D4AF37;color:#D4AF37;background:rgba(212,175,55,0.06);transform:translateY(-2px);}
+        .suggestion-chip{display:inline-block;background:rgba(212,175,55,0.06);border:1px solid rgba(212,175,55,0.12);padding:0.2rem 0.8rem;border-radius:20px;font-size:0.7rem;color:#D4AF37;margin-top:0.4rem;cursor:pointer;transition:all 0.3s;}
+        .suggestion-chip:hover{background:rgba(212,175,55,0.12);transform:translateY(-1px);}
+        
+        .typing-dots{display:flex;gap:5px;padding:0.4rem 0;}
+        .typing-dots span{width:8px;height:8px;border-radius:50%;background:#D4AF37;animation:typingBounce 1.4s infinite;}
+        .typing-dots span:nth-child(2){animation-delay:0.2s;}
+        .typing-dots span:nth-child(3){animation-delay:0.4s;}
+        @keyframes typingBounce{0%,60%,100%{opacity:0.3;transform:translateY(0);}30%{opacity:1;transform:translateY(-6px);}}
+        
+        .build-loader{display:flex;flex-direction:column;align-items:center;gap:0.6rem;padding:1.2rem;background:#14100D;border-radius:16px;animation:slideUp 0.4s ease;}
+        .build-loader .label{font-size:0.8rem;color:#D4AF37;font-weight:600;letter-spacing:0.5px;}
+        .build-loader .track{width:100%;height:3px;background:rgba(253,250,246,0.06);border-radius:3px;overflow:hidden;}
+        .build-loader .track-fill{height:100%;background:linear-gradient(90deg,#C8A882,#D4AF37);border-radius:3px;animation:fillProgress 2s ease infinite;}
+        @keyframes fillProgress{0%{width:0%;}50%{width:70%;}100%{width:100%;}}
+        
+        .chat-footer{padding:0.8rem 1.2rem;border-top:1px solid rgba(253,250,246,0.06);display:flex;gap:0.5rem;background:#0D0A08;flex-shrink:0;}
+        .chat-footer input{flex:1;padding:0.75rem 1rem;border-radius:30px;border:1px solid rgba(253,250,246,0.06);background:#14100D;color:#FDFAF6;font-family:'Inter',sans-serif;font-size:0.85rem;outline:none;transition:all 0.3s;}
+        .chat-footer input:focus{border-color:#D4AF37;box-shadow:0 0 0 3px rgba(212,175,55,0.05);}
+        .chat-footer input::placeholder{color:#706860;}
+        .chat-footer input:disabled{opacity:0.5;cursor:not-allowed;}
+        .chat-footer button{width:46px;height:46px;border-radius:50%;background:linear-gradient(135deg,#D4AF37,#C8A882);border:none;color:#0A1F1A;cursor:pointer;font-size:1rem;transition:all 0.3s;flex-shrink:0;}
+        .chat-footer button:hover:not(:disabled){transform:scale(1.08);box-shadow:0 8px 30px rgba(212,175,55,0.3);}
+        .chat-footer button:disabled{opacity:0.4;cursor:not-allowed;}
+        
+        .preview-panel{flex:1;background:#060504;border-radius:24px;border:1px solid rgba(253,250,246,0.06);overflow-y:auto;position:relative;box-shadow:0 25px 80px rgba(0,0,0,0.8);}
+        .preview-controls{position:sticky;top:0;z-index:10;background:rgba(0,0,0,0.7);backdrop-filter:blur(16px);padding:0.5rem 1rem;display:flex;gap:0.5rem;border-bottom:1px solid rgba(253,250,246,0.06);flex-wrap:wrap;display:none;}
+        .preview-controls button{background:transparent;border:1px solid rgba(253,250,246,0.06);color:#A09890;padding:0.3rem 0.9rem;border-radius:30px;font-size:0.65rem;cursor:pointer;transition:all 0.3s;font-family:'Inter',sans-serif;font-weight:600;}
+        .preview-controls button:hover{border-color:#D4AF37;color:#D4AF37;}
+        .preview-controls .active{background:#D4AF37;color:#0A1F1A;border-color:#D4AF37;}
+        .preview-frame{min-height:100%;transition:all 0.4s ease;}
+        .empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;text-align:center;color:#A09890;opacity:0.5;padding:2rem;}
+        .empty-state i{font-size:4rem;margin-bottom:1rem;color:#D4AF37;opacity:0.3;}
+        .empty-state h2{font-family:'Playfair Display',serif;font-size:1.6rem;color:#FDFAF6;opacity:0.6;}
+        .empty-state p{font-size:0.85rem;margin-top:0.3rem;}
+        
+        .popup-overlay{position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.92);backdrop-filter:blur(20px);display:flex;align-items:center;justify-content:center;opacity:0;visibility:hidden;transition:all 0.5s ease;}
+        .popup-overlay.active{opacity:1;visibility:visible;}
+        .popup-card{background:linear-gradient(145deg,#0D0A08,#1A1512);border:2px solid #D4AF37;border-radius:24px;padding:2.5rem 2rem;text-align:center;max-width:520px;width:90%;box-shadow:0 40px 100px rgba(0,0,0,0.8);animation:popIn 0.5s cubic-bezier(0.34,1.56,0.64,1);position:relative;}
+        @keyframes popIn{from{opacity:0;transform:scale(0.9) translateY(30px);}to{opacity:1;transform:scale(1) translateY(0);}}
+        .popup-card h2{font-family:'Playfair Display',serif;font-size:1.8rem;color:#D4AF37;margin-bottom:0.5rem;}
+        .popup-card p{color:#A09890;line-height:1.7;margin-bottom:1rem;font-size:0.9rem;}
+        .popup-close{position:absolute;top:1rem;right:1.5rem;background:none;border:none;color:#706860;font-size:1.5rem;cursor:pointer;transition:color 0.3s;}
+        .popup-close:hover{color:#FFF;}
+        .popup-badge{display:inline-block;background:#FF3B30;color:#FFF;padding:0.2rem 0.8rem;border-radius:30px;font-size:0.7rem;font-weight:700;animation:pulseBadge 1.5s infinite;}
+        @keyframes pulseBadge{0%,100%{opacity:1;}50%{opacity:0.6;}}
+        .popup-highlight{background:rgba(212,175,55,0.05);border:1px solid rgba(212,175,55,0.12);border-radius:16px;padding:1rem 1.2rem;margin:1rem 0;text-align:left;}
+        .popup-highlight div{color:#FDFAF6;font-size:0.85rem;padding:0.3rem 0;}
+        .popup-highlight i{color:#D4AF37;margin-right:0.6rem;width:1.2rem;}
+        .popup-input{width:100%;padding:0.9rem 1.2rem;border-radius:30px;border:1px solid rgba(253,250,246,0.06);background:#080605;color:#FFF;font-family:'Inter',sans-serif;font-size:0.9rem;margin-bottom:0.6rem;outline:none;transition:all 0.3s;}
+        .popup-input:focus{border-color:#D4AF37;}
+        .popup-btn{width:100%;padding:1rem;border-radius:30px;background:linear-gradient(135deg,#D4AF37,#C8A882);color:#0A1F1A;border:none;font-weight:700;font-size:1rem;cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.3s;}
+        .popup-btn:hover{transform:translateY(-3px);box-shadow:0 15px 40px rgba(212,175,55,0.4);}
+        
+        .contact-row{display:flex;gap:0.6rem;flex-wrap:wrap;justify-content:center;margin:0.8rem 0;}
+        .contact-btn{display:inline-flex;align-items:center;gap:0.5rem;padding:0.7rem 1.5rem;border-radius:40px;font-weight:700;font-size:0.85rem;text-decoration:none;transition:all 0.3s;border:1px solid transparent;}
+        .contact-btn:hover{transform:translateY(-3px);}
+        .btn-wa{background:#25D366;color:#FFF;border-color:#25D366;}
+        .btn-wa:hover{box-shadow:0 12px 35px rgba(37,211,102,0.4);}
+        .btn-email{background:#D4AF37;color:#0A1F1A;border-color:#D4AF37;}
+        .btn-email:hover{box-shadow:0 12px 35px rgba(212,175,55,0.4);}
+        .btn-call{background:#1A73E8;color:#FFF;border-color:#1A73E8;}
+        .btn-call:hover{box-shadow:0 12px 35px rgba(26,115,232,0.4);}
+        
+        .change-overlay{position:fixed;inset:0;z-index:9998;background:rgba(0,0,0,0.92);backdrop-filter:blur(16px);display:flex;align-items:center;justify-content:center;opacity:0;visibility:hidden;transition:all 0.5s ease;}
+        .change-overlay.active{opacity:1;visibility:visible;}
+        .change-card{background:linear-gradient(145deg,#0A0806,#14100D);border:2px solid #D4AF37;border-radius:24px;padding:2.5rem 2rem;text-align:center;max-width:480px;width:90%;box-shadow:0 30px 100px rgba(0,0,0,0.9);animation:popIn 0.5s cubic-bezier(0.34,1.56,0.64,1);}
+        .change-card .icon-circle{width:72px;height:72px;background:linear-gradient(135deg,#C8A882,#D4AF37);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:2rem;color:#0A1F1A;margin:0 auto 1.2rem;animation:float 3s ease-in-out infinite;}
+        .change-card h2{font-family:'Playfair Display',serif;font-size:1.6rem;color:#FFF;margin-bottom:0.3rem;}
+        .change-card .sub{color:#D4AF37;font-size:0.85rem;font-weight:600;margin-bottom:0.8rem;}
+        .change-card p{color:#A09890;line-height:1.7;font-size:0.9rem;}
+        .benefits{text-align:left;margin:1rem 0;}
+        .benefits div{padding:0.3rem 0;color:#FDFAF6;font-size:0.85rem;}
+        .benefits i{color:#D4AF37;margin-right:0.6rem;width:1.2rem;}
+        
+        .confetti-box{position:fixed;inset:0;pointer-events:none;z-index:10000;overflow:hidden;}
+        .confetti-piece{position:absolute;top:-20px;width:10px;height:10px;animation:confettiFall linear forwards;}
+        @keyframes confettiFall{0%{transform:translateY(0) rotate(0deg) scale(1);opacity:1;}100%{transform:translateY(110vh) rotate(720deg) scale(0.3);opacity:0;}}
+        
+        @media(max-width:768px){.popup-card{padding:1.8rem 1.2rem;}.popup-card h2{font-size:1.4rem;}.change-card{padding:1.8rem 1.2rem;}.chat-panel{height:45vh;}.preview-panel{height:45vh;}.contact-row{flex-direction:column;align-items:center;}.contact-btn{width:100%;justify-content:center;}}
+    </style>
+</head>
+<body>
+
+    <!-- CONFETTI -->
+    <div class="confetti-box" id="confettiBox"></div>
+
+    <!-- POPUP -->
+    <div class="popup-overlay" id="freePopup">
+        <div class="popup-card">
+            <button class="popup-close" onclick="closeFreePopup()">&times;</button>
+            <span class="popup-badge">🎁 FREE WEBSITE DEMO</span>
+            <h2 style="margin-top:0.8rem;">Get Your FREE Website!</h2>
+            <p>Fill the form OR contact me directly — I'll send your <strong>FREE premium website</strong> in 24 hours!</p>
+            <form id="freeForm">
+                <input type="text" class="popup-input" name="name" placeholder="Your Full Name *" required>
+                <input type="email" class="popup-input" name="email" placeholder="Email Address *" required>
+                <input type="tel" class="popup-input" name="phone" placeholder="WhatsApp Number *" required>
+                <button type="submit" class="popup-btn">🚀 Send My FREE Website</button>
+            </form>
+            <p style="font-size:0.7rem;color:#706860;margin:0.5rem 0;">OR contact me directly 👇</p>
+            <div class="contact-row">
+                <a href="https://wa.me/919355121175?text=Hi%20Etch%20%26%20Code!%20I%20want%20a%20FREE%20website%20demo!" target="_blank" class="contact-btn btn-wa"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+                <a href="mailto:k9891p@gmail.com?subject=Website%20Demo%20Request&body=Hi%2C%20I%20want%20a%20FREE%20website%20demo!" class="contact-btn btn-email"><i class="fas fa-envelope"></i> Email</a>
+                <a href="tel:+919355121175" class="contact-btn btn-call"><i class="fas fa-phone"></i> Call</a>
+            </div>
+            <p style="font-size:0.65rem;color:#706860;margin-top:0.3rem;">📱 Response within 2-3 hours · 100% Free</p>
+        </div>
+    </div>
+
+    <!-- CHANGE POPUP -->
+    <div class="change-overlay" id="changePopup">
+        <div class="change-card">
+            <div class="icon-circle">✉️</div>
+            <h2>Want Changes? Let's Perfect It!</h2>
+            <p class="sub">Your website is ready — now let's customize it for YOU</p>
+            <p>I'll personally modify everything you need — <strong>free of charge</strong>.</p>
+            <div class="benefits">
+                <div><i class="fas fa-star"></i> <strong>Free modifications</strong> by senior designer</div>
+                <div><i class="fas fa-star"></i> <strong>Logo, images, content</strong> — anything</div>
+                <div><i class="fas fa-star"></i> <strong>Colors, layout, sections</strong> — unlimited</div>
+                <div><i class="fas fa-star"></i> <strong>Mobile + SEO</strong> included FREE</div>
+            </div>
+            <div class="contact-row" style="margin-top:0.5rem;">
+                <a href="mailto:k9891p@gmail.com?subject=Website%20Customization%20Request&body=Hi%2C%0A%0AI%20built%20a%20website%20with%20Etch%20%26%20Code%20AI%20and%20I'd%20like%20changes%3A%0A%0A1.%20%0A2.%20%0A3.%20%0A%0AMy%20contact%3A%20%0A%0AThanks!" class="contact-btn btn-email"><i class="fas fa-envelope"></i> Email Changes</a>
+                <a href="https://wa.me/919355121175?text=Hi%2C%20I%20want%20changes%20in%20my%20website!" target="_blank" class="contact-btn btn-wa"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+            </div>
+            <p style="font-size:0.65rem;color:#706860;margin-top:0.8rem;">📱 Call/WhatsApp: <strong>9355121175</strong> · Response within 2-3 hours</p>
+        </div>
+    </div>
+
+    <!-- CHAT PANEL -->
+    <div class="chat-panel">
+        <div class="chat-header">
+            <div class="ai-avatar">✨<span class="dot"></span></div>
+            <div class="header-info">
+                <h3>Etch & Code Pro</h3>
+                <p>🟢 Online · Ready to build</p>
+            </div>
+            <div class="header-actions">
+                <button class="header-btn" onclick="restartChat()"><i class="fas fa-undo"></i> Restart</button>
+                <button class="header-btn" onclick="exportWebsite()"><i class="fas fa-download"></i> Export</button>
+            </div>
+        </div>
+        <div class="progress-wrap">
+            <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+            <div class="step-label"><span id="stepLabel">Step 0 of 8</span><span id="stepPercent">0%</span></div>
+        </div>
+        <div class="chat-messages" id="chatMessages">
+            <div class="msg bot">
+                <div class="msg-avatar">EC</div>
+                <div class="msg-bubble">
+                    👋 <strong>Welcome to Etch & Code Pro!</strong> — Your premium website builder.<br><br>
+                    I'll create a <strong>stunning, professional website</strong> for your brand in just 8 questions. Watch it come to life in real-time! ✨<br><br>
+                    <strong>Q1 of 8:</strong> What's your <strong>business/brand name</strong>?
+                    <div class="suggestion-chip" onclick="suggestAnswer('My Brand')">💡 e.g. My Brand</div>
+                </div>
+            </div>
+        </div>
+        <div class="chat-footer">
+            <input type="text" id="chatInput" placeholder="Type your answer..." onkeypress="if(event.key==='Enter')handleSend()" autofocus>
+            <button onclick="handleSend()" id="sendBtn"><i class="fas fa-arrow-right"></i></button>
+        </div>
+    </div>
+
+    <!-- PREVIEW PANEL -->
+    <div class="preview-panel" id="previewPanel">
+        <div class="preview-controls" id="previewControls">
+            <button class="active" onclick="setPreviewMode('desktop')" id="modeDesktop"><i class="fas fa-desktop"></i> Desktop</button>
+            <button onclick="setPreviewMode('mobile')" id="modeMobile"><i class="fas fa-mobile-alt"></i> Mobile</button>
+            <button onclick="exportWebsite()"><i class="fas fa-download"></i> Export</button>
+            <button onclick="restartChat()"><i class="fas fa-redo"></i> New Site</button>
+        </div>
+        <div class="preview-frame" id="previewFrame">
+            <div class="empty-state">
+                <i class="fas fa-wand-magic-sparkles"></i>
+                <h2>Your Premium Website Awaits</h2>
+                <p>Answer 8 simple questions on the left<br>and watch your dream website build itself! 🚀</p>
+                <div style="margin-top:1.5rem;font-size:0.7rem;color:#706860;">
+                    <i class="fas fa-check-circle" style="color:#D4AF37;"></i> 20+ Premium Themes &nbsp;·&nbsp;
+                    <i class="fas fa-check-circle" style="color:#D4AF37;"></i> Fully Responsive &nbsp;·&nbsp;
+                    <i class="fas fa-check-circle" style="color:#D4AF37;"></i> Export HTML
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ============================================================
+        // STATE
+        // ============================================================
+        const S = {
+            step: 1,
+            data: { name: '', tagline: '', desc: '', services: '', contact: '', ytLink: '', industry: '', colorPref: '' },
+            built: false,
+            processing: false,
+            mode: 'desktop',
+            timer: null
+        };
+
+        // ============================================================
+        // DOM REFS
+        // ============================================================
+        const $ = id => document.getElementById(id);
+        const messages = $('chatMessages');
+        const input = $('chatInput');
+        const sendBtn = $('sendBtn');
+        const preview = $('previewFrame');
+        const controls = $('previewControls');
+        const progress = $('progressFill');
+        const stepLabel = $('stepLabel');
+        const stepPercent = $('stepPercent');
+        const freePopup = $('freePopup');
+        const freeForm = $('freeForm');
+        const changePopup = $('changePopup');
+        const confettiBox = $('confettiBox');
+
+        // ============================================================
+        // UTILITY
+        // ============================================================
+        function esc(s) { if (!s) return ''; return s.replace(/[&<>]/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' })[m]); }
+        function getVideoId(url) { if (!url) return null; const m = url.match(/(?:youtube\.com\/(?:watch\?v=|embed\/|v\/|shorts\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/); return m ? m[1] : null; }
+        function isValidYouTubeUrl(url) { return url ? /(?:youtube\.com\/(?:watch\?v=|embed\/|v\/|shorts\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/.test(url) : false; }
+
+        // ============================================================
+        // COLOR THEMES
+        // ============================================================
+        function getTheme(pref) {
+            const themes = {
+                'luxury gold': { bg: '#0A0806', card: '#100D0B', text: '#FDFAF6', text2: '#A09890', accent: '#D4AF37', accent2: '#C8A882', hero: 'linear-gradient(135deg,#0A1F1A,#1A3C34,#0D1B2A)', font: 'Playfair Display', name: 'Luxury Gold ✨' },
+                'neon cyber': { bg: '#050510', card: '#0D0D1A', text: '#E8ECFF', text2: '#8899BB', accent: '#FF3CAC', accent2: '#FF6BDF', hero: 'linear-gradient(135deg,#0A0020,#150030)', font: 'Poppins', name: 'Neon Cyber ⚡' },
+                'minimal white': { bg: '#FCFCFC', card: '#FFFFFF', text: '#1A1A1A', text2: '#777', accent: '#000', accent2: '#333', hero: '#FFFFFF', font: 'Inter', name: 'Minimal White 🤍' },
+                'ocean blue': { bg: '#F0F6FA', card: '#FFF', text: '#0A1A2A', text2: '#5A7A9A', accent: '#06C', accent2: '#09E', hero: 'linear-gradient(135deg,#E0EEFA,#F0F6FA)', font: 'Inter', name: 'Ocean Blue 🌊' },
+                'forest green': { bg: '#F5FAF7', card: '#FFF', text: '#0A1A0F', text2: '#5A7A5F', accent: '#2E7D32', accent2: '#4CAF50', hero: 'linear-gradient(135deg,#E8F5E9,#F5FAF7)', font: 'Playfair Display', name: 'Forest Green 🌿' },
+                'sunset orange': { bg: '#FFF8F5', card: '#FFF', text: '#1A0A05', text2: '#8A6A5A', accent: '#FF6B2C', accent2: '#FF8C5A', hero: 'linear-gradient(135deg,#FFF0E8,#FFF8F5)', font: 'Poppins', name: 'Sunset Orange 🧡' },
+                'royal purple': { bg: '#0A0515', card: '#150D25', text: '#F5F0FF', text2: '#A090C0', accent: '#8B5CF6', accent2: '#A78BFA', hero: 'linear-gradient(135deg,#1A0530,#2D0A50)', font: 'Playfair Display', name: 'Royal Purple 👑' },
+                'dark elegance': { bg: '#050505', card: '#0D0D0D', text: '#F0F0F0', text2: '#999', accent: '#D4AF37', accent2: '#C8A882', hero: 'linear-gradient(135deg,#0A0A0A,#1A1A1A)', font: 'Playfair Display', name: 'Dark Elegance 🖤' },
+                'crimson red': { bg: '#0A0505', card: '#150A0A', text: '#FFF0F0', text2: '#B08080', accent: '#E63946', accent2: '#FF6B7A', hero: 'linear-gradient(135deg,#1A0505,#2D0A0A)', font: 'Playfair Display', name: 'Crimson Red 🔥' },
+                'midnight blue': { bg: '#050510', card: '#0A0A1A', text: '#E8ECFF', text2: '#8899CC', accent: '#1A5276', accent2: '#2E86C1', hero: 'linear-gradient(135deg,#050A1A,#0A1A2D)', font: 'Inter', name: 'Midnight Blue 🌙' },
+                'warm beige': { bg: '#FDF8F0', card: '#FFFCF8', text: '#2A1A0A', text2: '#8A7A6A', accent: '#D4A574', accent2: '#E8C8A0', hero: 'linear-gradient(135deg,#FDF8F0,#FAF0E0)', font: 'Playfair Display', name: 'Warm Beige 🌾' },
+                'rose gold': { bg: '#0A0508', card: '#150A0D', text: '#FFF5F8', text2: '#B08090', accent: '#E8A0B0', accent2: '#F5C0D0', hero: 'linear-gradient(135deg,#1A0A10,#2D0A18)', font: 'Playfair Display', name: 'Rose Gold 🌸' },
+                'space gray': { bg: '#050508', card: '#0A0A0F', text: '#F0F0F5', text2: '#8890A0', accent: '#6A7A8A', accent2: '#8A9AA8', hero: 'linear-gradient(135deg,#0A0A0F,#151520)', font: 'Inter', name: 'Space Gray 🚀' },
+                'vibrant teal': { bg: '#F0FCFA', card: '#FFF', text: '#0A1A18', text2: '#5A8A82', accent: '#00B4A0', accent2: '#4CD4C0', hero: 'linear-gradient(135deg,#E0FAF5,#F0FCFA)', font: 'Inter', name: 'Vibrant Teal 🌀' },
+                'sunflower': { bg: '#0A0802', card: '#100D05', text: '#FDF8E8', text2: '#A09870', accent: '#F5C842', accent2: '#F5D870', hero: 'linear-gradient(135deg,#1A1505,#2D2005)', font: 'Playfair Display', name: 'Sunflower 🌻' }
+            };
+            const key = Object.keys(themes).find(k => pref.toLowerCase().includes(k));
+            return key ? themes[key] : themes['luxury gold'];
+        }
+
+        // ============================================================
+        // SUGGEST
+        // ============================================================
+        function suggestAnswer(val) {
+            if (S.processing || S.built) return;
+            input.value = val;
+            handleSend();
+        }
+
+        // ============================================================
+        // PROGRESS
+        // ============================================================
+        function updateProgress() {
+            const p = ((S.step - 1) / 8) * 100;
+            progress.style.width = Math.min(p, 100) + '%';
+            stepLabel.textContent = 'Step ' + (S.step - 1) + ' of 8';
+            stepPercent.textContent = Math.round(Math.min(p, 100)) + '%';
+        }
+
+        function setProcessing(active) {
+            S.processing = active;
+            input.disabled = active;
+            sendBtn.disabled = active;
+            input.placeholder = active ? '🎨 Building your masterpiece...' : 'Type your answer...';
+            if (!active) input.focus();
+        }
+
+        // ============================================================
+        // MESSAGES
+        // ============================================================
+        function addMsg(text, user) {
+            var d = document.createElement('div');
+            d.className = 'msg ' + (user ? 'user' : 'bot');
+            d.innerHTML = '<div class="msg-avatar">' + (user ? 'You' : 'EC') + '</div><div class="msg-bubble">' + text + '</div>';
+            messages.appendChild(d);
+            messages.scrollTop = messages.scrollHeight;
+            return d;
+        }
+
+        function showTyping(cb, delay) {
+            delay = delay || 1200;
+            var d = document.createElement('div');
+            d.className = 'msg bot';
+            d.innerHTML = '<div class="msg-avatar">EC</div><div class="msg-bubble"><div class="typing-dots"><span></span><span></span><span></span></div></div>';
+            messages.appendChild(d);
+            messages.scrollTop = messages.scrollHeight;
+            setTimeout(function() { d.remove();
+                cb(); }, delay);
+        }
+
+        function showLoader(text, cb, delay) {
+            delay = delay || 2000;
+            var d = document.createElement('div');
+            d.className = 'msg bot';
+            d.innerHTML = '<div class="msg-avatar">EC</div><div class="msg-bubble"><div class="build-loader"><div class="label">' + text + '</div><div class="track"><div class="track-fill"></div></div></div></div>';
+            messages.appendChild(d);
+            messages.scrollTop = messages.scrollHeight;
+            setTimeout(function() { d.remove();
+                cb(); }, delay);
+        }
+
+        function addQuick(opts) {
+            var last = messages.lastElementChild;
+            if (!last) return;
+            var bubble = last.querySelector('.msg-bubble');
+            if (!bubble) return;
+            var row = document.createElement('div');
+            row.className = 'quick-row';
+            for (var i = 0; i < opts.length; i++) {
+                (function(o) {
+                    var b = document.createElement('button');
+                    b.className = 'quick-btn';
+                    b.textContent = o;
+                    b.onclick = function() {
+                        if (S.processing || S.built) return;
+                        addMsg(o, true);
+                        processStep(o);
+                    };
+                    row.appendChild(b);
+                })(opts[i]);
+            }
+            bubble.appendChild(row);
+            messages.scrollTop = messages.scrollHeight;
+        }
+
+        function addSuggestion(text) {
+            var last = messages.lastElementChild;
+            if (!last) return;
+            var bubble = last.querySelector('.msg-bubble');
+            if (!bubble) return;
+            var chip = document.createElement('div');
+            chip.className = 'suggestion-chip';
+            chip.textContent = '💡 ' + text;
+            chip.onclick = function() { input.value = text;
+                handleSend(); };
+            bubble.appendChild(chip);
+        }
+
+        // ============================================================
+        // CONFETTI
+        // ============================================================
+        var confettiActive = false;
+
+        function launchConfetti() {
+            if (confettiActive) return;
+            confettiActive = true;
+            var colors = ['#D4AF37', '#C8A882', '#FF6B6B', '#4ADE80', '#60A5FA', '#FBBF24', '#FF3CAC', '#00E5CC', '#FF8C5A', '#A78BFA'];
+            for (var i = 0; i < 150; i++) {
+                var p = document.createElement('div');
+                p.className = 'confetti-piece';
+                var s = 6 + Math.random() * 14;
+                p.style.width = s + 'px';
+                p.style.height = s * (0.3 + Math.random() * 0.7) + 'px';
+                p.style.background = colors[Math.floor(Math.random() * colors.length)];
+                p.style.left = Math.random() * 100 + '%';
+                p.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+                p.style.animationDuration = (2 + Math.random() * 3) + 's';
+                p.style.animationDelay = (Math.random() * 2) + 's';
+                confettiBox.appendChild(p);
+                setTimeout(function(el) { el.remove(); }, 5000);
+            }
+            setTimeout(function() { confettiActive = false; }, 4000);
+        }
+
+        // ============================================================
+        // CORE LOGIC
+        // ============================================================
+        function processStep(val) {
+            if (S.built) { changePopup.classList.add('active'); return; }
+            setProcessing(true);
+            var step = S.step;
+            var data = S.data;
+
+            if (step === 1) {
+                data.name = val;
+                showTyping(function() {
+                    addMsg('🤔 <strong>' + esc(val) + '</strong> — that\'s a powerful name! I love it.');
+                }, 500);
+                showTyping(function() {
+                    addMsg('🔥 <strong>' + esc(val) + '</strong> has so much potential!<br><br><strong>Q2 of 8:</strong> Write a <strong>tagline</strong> for your brand.<br><small style="opacity:0.6;">e.g., "Innovation meets elegance"</small>');
+                    addSuggestion('"Where vision becomes reality"');
+                    setProcessing(false);
+                    S.step = 2;
+                    updateProgress();
+                }, 1600);
+            } else if (step === 2) {
+                data.tagline = val;
+                showTyping(function() {
+                    addMsg('💎 "' + esc(val) + '" — stunning! That\'s the kind of tagline that gets noticed.');
+                }, 800);
+                showTyping(function() {
+                    addMsg('Now <strong>Q3 of 8:</strong> Describe your <strong>business</strong> in 2-3 sentences.<br><small style="opacity:0.6;">Tell me what makes you special!</small>');
+                    addSuggestion('We craft premium digital experiences');
+                    setProcessing(false);
+                    S.step = 3;
+                    updateProgress();
+                }, 1500);
+            } else if (step === 3) {
+                data.desc = val;
+                showTyping(function() {
+                    addMsg('📝 I\'m loving this! Your business story is taking shape beautifully.');
+                }, 700);
+                showTyping(function() {
+                    addMsg('Perfect! <strong>Q4 of 8:</strong> List your <strong>services</strong> (comma separated).<br><small style="opacity:0.6;">e.g., Web Design, SEO, Branding</small>');
+                    addSuggestion('Web Design, Development, Digital Marketing, Branding');
+                    setProcessing(false);
+                    S.step = 4;
+                    updateProgress();
+                }, 1400);
+            } else if (step === 4) {
+                data.services = val;
+                showTyping(function() {
+                    addMsg('📋 Got it! Your services are noted. You\'re building something amazing!');
+                }, 700);
+                showTyping(function() {
+                    addMsg('🎥 <strong>Q5 of 8:</strong> Do you have a <strong>YouTube video</strong> to embed? Paste link or type <strong>"skip"</strong>.<br><small style="opacity:0.6;">This will add life to your website!</small>');
+                    addSuggestion('https://youtu.be/your-video-id');
+                    setProcessing(false);
+                    S.step = 5;
+                    updateProgress();
+                }, 1400);
+            } else if (step === 5) {
+                var l = val.toLowerCase().trim();
+                if (l === 'skip' || l === 'no' || l === 'none') {
+                    data.ytLink = '';
+                    showTyping(function() {
+                        addMsg('⏭️ No worries! Your website will still be incredible.<br><br><strong>Q6 of 8:</strong> Your <strong>contact number</strong>?');
+                        setProcessing(false);
+                        S.step = 6;
+                        updateProgress();
+                    }, 1000);
+                } else if (isValidYouTubeUrl(val)) {
+                    data.ytLink = val;
+                    showTyping(function() {
+                        addMsg('🎬 Excellent! This video will make your website even more engaging.<br><br><strong>Q6 of 8:</strong> Your <strong>contact number</strong>?');
+                        setProcessing(false);
+                        S.step = 6;
+                        updateProgress();
+                    }, 1200);
+                } else {
+                    showTyping(function() {
+                        addMsg('❌ Hmm, that doesn\'t look like a valid YouTube link. Try again or type <strong>"skip"</strong>.');
+                        setProcessing(false);
+                    }, 1000);
+                }
+            } else if (step === 6) {
+                data.contact = val;
+                showTyping(function() {
+                    addMsg('📞 Saved! Almost there... let\'s make it beautiful!');
+                }, 700);
+                showTyping(function() {
+                    addMsg('🎨 <strong>Q7 of 8:</strong> Pick a <strong>color theme</strong> for your website — this defines your brand\'s personality!');
+                    addQuick(['Luxury Gold ✨', 'Neon Cyber ⚡', 'Minimal White 🤍', 'Ocean Blue 🌊',
+                        'Forest Green 🌿', 'Sunset Orange 🧡', 'Royal Purple 👑', 'Dark Elegance 🖤',
+                        'Crimson Red 🔥', 'Midnight Blue 🌙', 'Warm Beige 🌾', 'Rose Gold 🌸',
+                        'Space Gray 🚀', 'Vibrant Teal 🌀', 'Sunflower 🌻'
+                    ]);
+                    setProcessing(false);
+                    S.step = 7;
+                    updateProgress();
+                }, 1400);
+            } else if (step === 7) {
+                data.colorPref = val;
+                var t = getTheme(val);
+                showTyping(function() {
+                    addMsg('🎨 <strong>' + t.name + '</strong> — absolutely beautiful! This will look incredible.');
+                }, 800);
+                showTyping(function() {
+                    addMsg('🏢 <strong>Q8 of 8:</strong> One last thing — select your <strong>industry</strong>:');
+                    addQuick(['Technology', 'Creative Agency', 'E-commerce', 'Healthcare', 'Education',
+                        'Real Estate', 'Food & Restaurant', 'Fashion', 'Fitness', 'Consulting',
+                        'Startup', 'Non-Profit', 'Travel & Hospitality', 'Music & Entertainment'
+                    ]);
+                    setProcessing(false);
+                    S.step = 8;
+                    updateProgress();
+                }, 1500);
+            } else if (step === 8) {
+                data.industry = val;
+                showTyping(function() {
+                    addMsg('🏢 ' + esc(val) + ' — perfect! Now watch me build your dream website...');
+                }, 800);
+                showLoader('🧠 Understanding your brand identity...', function() {
+                    showLoader('🎨 Curating the perfect design palette...', function() {
+                        showLoader('📐 Architecting your website layout...', function() {
+                            showLoader('✨ Adding premium animations & effects...', function() {
+                                showLoader('📱 Optimizing for every device...', function() {
+                                    showLoader('🚀 Putting the final polish...', function() {
+                                        generateWebsite();
+                                        launchConfetti();
+                                        addMsg('🎉 <strong>CONGRATULATIONS!</strong> 🎉<br><br>Your website for <strong>' + esc(data.name) + '</strong> is <strong>LIVE</strong> in the preview panel!<br><br>✨ <strong>What you get:</strong><br>✅ Premium custom design<br>✅ 20+ color themes<br>✅ Fully responsive<br>✅ Professional layout<br>✅ Beautiful animations<br>✅ One-click export<br><br>💡 <strong>Want changes?</strong> Just type below — I\'ll help you customize everything!<br><br>👇 <strong>Don\'t forget to download your website!</strong>');
+                                        S.built = true;
+                                        S.step = 9;
+                                        updateProgress();
+                                        setProcessing(false);
+                                        controls.style.display = 'flex';
+                                        if (S.timer) clearTimeout(S.timer);
+                                        S.timer = setTimeout(function() {
+                                            freePopup.classList.add('active');
+                                        }, 8000);
+                                    }, 1800);
+                                }, 1500);
+                            }, 1500);
+                        }, 1500);
+                    }, 1200);
+                }, 1000);
+            }
+        }
+
+        function handleSend() {
+            if (S.processing) return;
+            var v = input.value.trim();
+            if (!v) return;
+            if (S.built) {
+                addMsg(v, true);
+                changePopup.classList.add('active');
+                input.value = '';
+                return;
+            }
+            if (S.step > 8) return;
+            addMsg(v, true);
+            processStep(v);
+            input.value = '';
+        }
+
+        // ============================================================
+        // PREVIEW MODE
+        // ============================================================
+        function setPreviewMode(mode) {
+            S.mode = mode;
+            var f = $('previewFrame');
+            if (mode === 'mobile') {
+                f.style.maxWidth = '375px';
+                f.style.margin = '0 auto';
+                f.style.background = '#000';
+                f.style.padding = '12px 0';
+                f.style.borderRadius = '24px';
+            } else {
+                f.style.maxWidth = '100%';
+                f.style.margin = '0';
+                f.style.background = 'transparent';
+                f.style.padding = '0';
+                f.style.borderRadius = '0';
+            }
+            $('modeDesktop').className = mode === 'desktop' ? 'active' : '';
+            $('modeMobile').className = mode === 'mobile' ? 'active' : '';
+        }
+
+        // ============================================================
+        // EXPORT
+        // ============================================================
+        function exportWebsite() {
+            var html = preview.innerHTML;
+            if (!html || html.indexOf('empty-state') > -1 || html.indexOf('Your Premium Website Awaits') > -1) {
+                alert('🎨 Please build a website first by answering the 8 questions!');
+                return;
+            }
+            var blob = new Blob([
+                '<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>My Website</title><style>*{margin:0;padding:0;box-sizing:border-box;}body{font-family:Inter,sans-serif;background:#0A0806;color:#FFF;}</style></head><body>' + html + '</body></html>'
+            ], { type: 'text/html' });
+            var a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = 'my-website.html';
+            a.click();
+            URL.revokeObjectURL(a.href);
+        }
+
+        // ============================================================
+        // RESTART
+        // ============================================================
+        function restartChat() {
+            if (!confirm('🔄 Start over? All progress will be lost.')) return;
+            S.step = 1;
+            S.built = false;
+            S.processing = false;
+            S.data = { name: '', tagline: '', desc: '', services: '', contact: '', ytLink: '', industry: '', colorPref: '' };
+            messages.innerHTML = '<div class="msg bot"><div class="msg-avatar">EC</div><div class="msg-bubble">👋 <strong>Welcome back to Etch & Code Pro!</strong><br><br>Let\'s build your dream website again! ✨<br><br><strong>Q1 of 8:</strong> What\'s your <strong>business/brand name</strong>?<div class="suggestion-chip" onclick="suggestAnswer(\'My Brand\')">💡 e.g. My Brand</div></div></div>';
+            preview.innerHTML = '<div class="empty-state"><i class="fas fa-wand-magic-sparkles"></i><h2>Your Premium Website Awaits</h2><p>Answer 8 simple questions on the left<br>and watch your dream website build itself! 🚀</p><div style="margin-top:1.5rem;font-size:0.7rem;color:#706860;"><i class="fas fa-check-circle" style="color:#D4AF37;"></i> 20+ Premium Themes &nbsp;·&nbsp;<i class="fas fa-check-circle" style="color:#D4AF37;"></i> Fully Responsive &nbsp;·&nbsp;<i class="fas fa-check-circle" style="color:#D4AF37;"></i> Export HTML</div></div>';
+            controls.style.display = 'none';
+            updateProgress();
+            input.value = '';
+            input.focus();
+            if (S.timer) { clearTimeout(S.timer);
+                S.timer = null; }
+            freePopup.classList.remove('active');
+            changePopup.classList.remove('active');
+            confettiBox.innerHTML = '';
+            confettiActive = false;
+        }
+
+        // ============================================================
+        // POPUPS
+        // ============================================================
+        function closeFreePopup() { freePopup.classList.remove('active'); }
+
+        freeForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            var btn = freeForm.querySelector('button');
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+            btn.disabled = true;
+            var fd = new FormData(freeForm);
+            fd.append('website_data', JSON.stringify(S.data));
+            fetch('https://formspree.io/f/xvzvddrl', { method: 'POST', body: fd, headers: { 'Accept': 'application/json' } })
+                .then(function() {
+                    freePopup.innerHTML = '<div class="popup-card"><h2>✅ Done!</h2><p>I\'ll contact you within <strong>24 hours</strong> with your <strong>FREE website demo</strong>.</p><p style="color:#D4AF37;">📧 k9891p@gmail.com<br>📱 9355121175</p><button class="popup-btn" onclick="closeFreePopup()" style="margin-top:1rem;">Close <i class="fas fa-arrow-right"></i></button></div>';
+                    launchConfetti();
+                })['catch'](function() {
+                    freePopup.innerHTML = '<div class="popup-card"><h2>✅ Done!</h2><p>I\'ll contact you within <strong>24 hours</strong> with your <strong>FREE website demo</strong>.</p><p style="color:#D4AF37;">📧 k9891p@gmail.com<br>📱 9355121175</p><button class="popup-btn" onclick="closeFreePopup()" style="margin-top:1rem;">Close <i class="fas fa-arrow-right"></i></button></div>';
+                    launchConfetti();
+                });
+        });
+
+        // ============================================================
+        // KEYBOARD SHORTCUTS
+        // ============================================================
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                if (freePopup.classList.contains('active')) closeFreePopup();
+                if (changePopup.classList.contains('active')) changePopup.classList.remove('active');
+            }
+            if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') { e.preventDefault();
+                handleSend(); }
+        });
+
+        // ============================================================
+        // GENERATE WEBSITE
+        // ============================================================
+        function generateWebsite() {
+            var name = S.data.name;
+            var tagline = S.data.tagline;
+            var desc = S.data.desc;
+            var services = S.data.services;
+            var contact = S.data.contact;
+            var ytLink = S.data.ytLink;
+            var t = getTheme(S.data.colorPref);
+            var svcs = services.split(',').map(function(s) { return s.trim(); }).filter(function(s) { return s; });
+            var defSvcs = svcs.length >= 2 ? svcs : ['Web Design', 'Development', 'Branding', 'Digital Marketing'];
+            var vid = getVideoId(ytLink);
+            var navBg = t.card.indexOf('FFF') > -1 ? 'rgba(255,255,255,0.85)' : 'rgba(0,0,0,0.5)';
+            var navText = t.card.indexOf('FFF') > -1 ? '#1A1A1A' : '#FFF';
+
+            var svcHtml = '';
+            for (var i = 0; i < defSvcs.length; i++) {
+                svcHtml += '<div style="background:' + t.card + ';border:1px solid rgba(128,128,128,0.06);border-radius:20px;padding:2.2rem 1.5rem;text-align:center;transition:all 0.4s cubic-bezier(0.34,1.56,0.64,1);cursor:pointer;animation:fadeUp 0.6s ease ' + (i *
+                    0.12) + 's both;" onmouseover="this.style.transform=\'translateY(-10px) scale(1.02)\';this.style.borderColor=\'' +
+                    t.accent + '\';this.style.boxShadow=\'0 20px 50px rgba(0,0,0,0.2)\';" onmouseout="this.style.transform=\'\';this.style.borderColor=\'\';this.style.boxShadow=\'\';"><div style="font-size:2.4rem;color:' +
+                    t.accent + ';margin-bottom:0.6rem;">✦</div><h3 style="font-family:\'' + t.font +
+                    '\',serif;color:' + t.text + ';font-size:1.1rem;margin-bottom:0.3rem;">' + esc(defSvcs[i]) +
+                    '</h3><p style="color:' + t.text2 + ';font-size:0.75rem;opacity:0.7;">Premium service</p></div>';
+            }
+
+            var ytHtml = '';
+            if (vid) {
+                ytHtml = '<section style="padding:4rem 2rem;max-width:900px;margin:0 auto;animation:fadeUp 0.8s ease;"><h2 style="font-family:\'' +
+                    t.font +
+                    '\',serif;text-align:center;font-size:2.2rem;color:' + t.text +
+                    ';margin-bottom:1.5rem;">🎬 Watch Our Story</h2><div style="position:relative;padding-bottom:56.25%;height:0;border-radius:24px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,0.4);"><iframe src="https://www.youtube.com/embed/' +
+                    vid +
+                    '" style="position:absolute;top:0;left:0;width:100%;height:100%;border:0;" allowfullscreen loading="lazy"></iframe></div></section>';
+            }
+
+            var nameWords = esc(name).split(' ');
+            var nameHtml = '';
+            for (var j = 0; j < nameWords.length; j++) {
+                if (j === nameWords.length - 1) {
+                    nameHtml += '<span style="background:linear-gradient(135deg,' + t.accent + ',' + t.accent2 +
+                        ');-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">' +
+                        nameWords[j] + '</span>';
+                } else {
+                    nameHtml += nameWords[j] + ' ';
+                }
+            }
+
+            var htmlContent =
+                '<div style="background:' + t.bg + ';color:' + t.text +
+                ';min-height:100%;font-family:\'Inter\',sans-serif;overflow-x:hidden;">' +
+                '<nav style="display:flex;justify-content:space-between;align-items:center;padding:1rem 2rem;background:' +
+                navBg + ';backdrop-filter:blur(20px);border-bottom:1px solid rgba(128,128,128,0.06);position:sticky;top:0;z-index:10;flex-wrap:wrap;gap:0.5rem;">' +
+                '<div style="font-family:\'' + t.font +
+                '\',serif;font-weight:800;font-size:1.6rem;color:' + navText + ';">' + esc(name).split(' ')[0] +
+                '<span style="color:' + t.accent + ';">.</span></div>' +
+                '<div style="display:flex;gap:2rem;flex-wrap:wrap;align-items:center;">' +
+                '<a href="#" style="color:' + navText +
+                ';text-decoration:none;font-size:0.8rem;opacity:0.6;transition:opacity 0.3s;" onmouseover="this.style.opacity=\'1\'">Home</a>' +
+                '<a href="#" style="color:' + navText +
+                ';text-decoration:none;font-size:0.8rem;opacity:0.6;transition:opacity 0.3s;" onmouseover="this.style.opacity=\'1\'">Services</a>' +
+                '<a href="#" style="color:' + navText +
+                ';text-decoration:none;font-size:0.8rem;opacity:0.6;transition:opacity 0.3s;" onmouseover="this.style.opacity=\'1\'">Contact</a>' +
+                '<button style="background:' + t.accent +
+                ';color:#FFF;border:none;padding:0.5rem 1.5rem;border-radius:40px;font-weight:700;font-size:0.75rem;cursor:pointer;transition:all 0.3s;box-shadow:0 8px 25px ' +
+                t.accent + '30;" onmouseover="this.style.transform=\'scale(1.05)\'" onmouseout="this.style.transform=\'\'">Get Started</button>' +
+                '</div></nav>' +
+                '<section style="' + t.hero +
+                ';padding:7rem 2rem 6rem;text-align:center;position:relative;overflow:hidden;">' +
+                '<div style="position:absolute;top:-100px;right:-100px;width:500px;height:500px;background:' + t.accent +
+                ';opacity:0.05;border-radius:50%;filter:blur(120px);"></div>' +
+                '<div style="position:absolute;bottom:-100px;left:-100px;width:400px;height:400px;background:' + t.accent2 +
+                ';opacity:0.03;border-radius:50%;filter:blur(120px);"></div>' +
+                '<h1 style="font-family:\'' + t.font +
+                '\',serif;font-size:clamp(3rem,8vw,5.5rem);font-weight:800;position:relative;color:' + t.text +
+                ';animation:fadeUp 0.8s ease;line-height:1.05;letter-spacing:-0.02em;">' + nameHtml + '</h1>' +
+                '<p style="font-style:italic;font-size:1.3rem;margin-top:1.2rem;color:' + t.text2 +
+                ';animation:fadeUp 0.8s ease 0.2s both;font-weight:300;">"' + esc(tagline || 'Excellence in every detail') +
+                '"</p>' +
+                '<p style="max-width:620px;margin:1.8rem auto 0;color:' + t.text2 +
+                ';animation:fadeUp 0.8s ease 0.4s both;font-size:1rem;line-height:1.8;opacity:0.8;">' + esc(desc || '') +
+                '</p>' +
+                '<button style="margin-top:2.5rem;padding:1rem 3rem;border-radius:60px;background:' + t.accent +
+                ';color:#FFF;border:none;font-weight:700;font-size:1rem;cursor:pointer;animation:fadeUp 0.8s ease 0.6s both;transition:all 0.3s;box-shadow:0 12px 35px ' +
+                t.accent + '40;" onmouseover="this.style.transform=\'translateY(-5px) scale(1.02)\';this.style.boxShadow=\'0 20px 60px ' +
+                t.accent + '60\'" onmouseout="this.style.transform=\'\';this.style.boxShadow=\'\'">Start Your Journey <i class="fas fa-arrow-right"></i></button>' +
+                '</section>' +
+                '<section style="padding:5rem 2rem;max-width:1100px;margin:0 auto;">' +
+                '<h2 style="font-family:\'' + t.font +
+                '\',serif;text-align:center;font-size:2.5rem;color:' + t.text +
+                ';animation:fadeUp 0.8s ease;letter-spacing:-0.02em;">What We Offer</h2>' +
+                '<p style="text-align:center;color:' + t.text2 +
+                ';margin-bottom:3.5rem;animation:fadeUp 0.8s ease 0.1s both;font-size:1rem;opacity:0.7;">Premium services tailored for your brand</p>' +
+                '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1.8rem;">' + svcHtml +
+                '</div></section>' +
+                ytHtml +
+                '<section style="padding:3.5rem 2rem;background:' + t.card + ';">' +
+                '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:2rem;max-width:550px;margin:0 auto;text-align:center;">' +
+                '<div style="animation:fadeUp 0.8s ease;"><div style="font-family:\'' + t.font +
+                '\',serif;font-size:3.2rem;font-weight:800;color:' + t.accent +
+                ';line-height:1;">150+</div><div style="color:' + t.text2 +
+                ';font-size:0.85rem;margin-top:0.2rem;">Projects Delivered</div></div>' +
+                '<div style="animation:fadeUp 0.8s ease 0.15s both;"><div style="font-family:\'' + t.font +
+                '\',serif;font-size:3.2rem;font-weight:800;color:' + t.accent +
+                ';line-height:1;">98%</div><div style="color:' + t.text2 +
+                ';font-size:0.85rem;margin-top:0.2rem;">Client Satisfaction</div></div>' +
+                '<div style="animation:fadeUp 0.8s ease 0.3s both;"><div style="font-family:\'' + t.font +
+                '\',serif;font-size:3.2rem;font-weight:800;color:' + t.accent +
+                ';line-height:1;">24/7</div><div style="color:' + t.text2 +
+                ';font-size:0.85rem;margin-top:0.2rem;">Premium Support</div></div>' +
+                '</div></section>' +
+                '<section style="padding:4rem 2rem;text-align:center;">' +
+                '<div style="background:linear-gradient(135deg,' + t.accent + ',' + t.accent2 +
+                ');border-radius:28px;padding:3.5rem 2.5rem;max-width:650px;margin:0 auto;color:#FFF;animation:fadeUp 0.8s ease;box-shadow:0 20px 60px ' +
+                t.accent + '30;">' +
+                '<h3 style="font-family:\'' + t.font + '\',serif;font-size:2rem;font-weight:700;">Let\'s Build Together</h3>' +
+                '<p style="margin:1rem 0 1.8rem;opacity:0.9;font-size:1rem;">Your vision + our expertise = extraordinary</p>' +
+                '<div style="font-size:1rem;display:flex;justify-content:center;gap:2rem;flex-wrap:wrap;">' +
+                '<span><i class="fas fa-phone-alt"></i> ' + esc(contact || '9355121175') + '</span>' +
+                '<span><i class="fas fa-envelope"></i> k9891p@gmail.com</span>' +
+                '</div></div></section>' +
+                '<footer style="text-align:center;padding:2.5rem 2rem;border-top:1px solid rgba(128,128,128,0.05);color:' +
+                t.text2 + ';font-size:0.8rem;opacity:0.5;">&copy; 2026 ' + esc(name) +
+                '. Crafted with ❤️ by <strong style="color:' + t.accent + ';">Etch & Code Pro</strong></footer>' +
+                '</div>' +
+                '<style>' +
+                '@keyframes fadeUp{from{opacity:0;transform:translateY(35px);}to{opacity:1;transform:translateY(0);}}' +
+                '@media(max-width:600px){section{padding:2.5rem 1rem !important;}nav{padding:0.5rem 1rem !important;flex-direction:column;text-align:center;}nav div:last-child{justify-content:center;}h1{font-size:2.2rem !important;}}' +
+                '</style>';
+
+            preview.innerHTML = htmlContent;
+            controls.style.display = 'flex';
+            if (S.mode === 'mobile') setPreviewMode('mobile');
+        }
+
+        // ============================================================
+        // INIT
+        // ============================================================
+        updateProgress();
+        input.focus();
+        console.log('🚀 Etch & Code Pro loaded!');
+    </script>
+
+</body>
+</html>

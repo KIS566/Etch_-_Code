@@ -101,7 +101,7 @@
 <body>
     <div class="loading-screen" id="loadingScreen">
         <div class="loading-ring"></div>
-        <div class="loading-status">Loading 90 Frames</div>
+        <div class="loading-status">Loading Frames</div>
         <div class="loading-count" id="loadingCount">0 / 90</div>
     </div>
 
@@ -184,18 +184,6 @@
     </div>
 
     <script>
-        // ⭐ COMPLETELY SILENT - NO CONSOLE ERRORS
-        const origErr = console.error;
-        console.error = function(...a) {
-            const m = a.join(' ');
-            if (!m.includes('404') && !m.includes('NOT FOUND') && !m.includes('Failed to load')) {
-                origErr.apply(console, a);
-            }
-        };
-        window.addEventListener('error', e => {
-            if (e.target?.tagName === 'IMG') { e.preventDefault(); e.stopPropagation(); return false; }
-        }, true);
-
         // ⭐ DOM
         const canvas = document.getElementById('mainCanvas');
         const ctx = canvas.getContext('2d');
@@ -215,8 +203,8 @@
         const frames=[];
         let TOTAL_FRAMES=0, currentFrame=-1;
 
-        // ⭐ FAST IMAGE LOAD - 1 sec timeout
-        function tryLoad(path){
+        // ⭐ SIRF .png LOAD KARO
+        function loadPNG(path){
             return new Promise(r=>{
                 const img=new Image(); let done=false;
                 const ok=(v)=>{ if(!done){ done=true; r(v); } };
@@ -228,25 +216,21 @@
         }
 
         async function loadAllFrames(){
-            console.log('🔍 Loading frames/01.png to frames/90.png...');
+            console.log('🔍 Loading PNG frames only...');
             loadingCount.textContent='0 / 90';
 
             const temp=[];
             
-            // ⭐ 01.png se 90.png tak scan karo
+            // ⭐ SIRF .png - 01.png se 90.png
             for(let i=1; i<=90; i++){
                 const num=i.toString().padStart(2,'0');
-                const path=`frames/${num}.png`;
-                const img=await tryLoad(path);
+                const path=`frames/${num}.png`;  // ← SIRF .png
+                const img=await loadPNG(path);
 
                 if(img){
                     temp.push({index:i, img});
                     loadingCount.textContent=`${temp.length} / 90`;
-                    
-                    // Console update har 10 frames pe
-                    if(temp.length%10===0){
-                        console.log(`📸 Loaded: ${temp.length}/90 frames`);
-                    }
+                    if(temp.length%10===0) console.log(`📸 ${temp.length}/90 PNGs loaded`);
                 }
             }
 
@@ -254,11 +238,10 @@
                 TOTAL_FRAMES=temp.length;
                 temp.sort((a,b)=>a.index-b.index);
                 temp.forEach(f=>frames.push(f.img));
-                console.log(`✅ COMPLETE: ${TOTAL_FRAMES} frames loaded!`);
+                console.log(`✅ COMPLETE: ${TOTAL_FRAMES} PNG frames!`);
             }else{
                 TOTAL_FRAMES=10;
-                console.warn('⚠️ No images found');
-                // Create simple placeholders
+                console.warn('⚠️ No PNGs found');
                 for(let i=1;i<=TOTAL_FRAMES;i++){
                     const c=document.createElement('canvas'); c.width=1920; c.height=1080;
                     const o=c.getContext('2d'); const h=((i-1)/TOTAL_FRAMES)*360;
@@ -274,11 +257,8 @@
 
             loadingCount.textContent=`${TOTAL_FRAMES} / ${TOTAL_FRAMES}`;
             frameTotal.textContent=TOTAL_FRAMES.toString().padStart(2,'0');
-            
-            // ⭐ SPEED = 4 (TOTAL_FRAMES × 4 vh)
-            const spacerVH=TOTAL_FRAMES*4;
-            scrollSpacer.style.height=spacerVH+'vh';
-            console.log(`🎬 ${TOTAL_FRAMES} frames | Spacer: ${spacerVH}vh | Speed: 4x`);
+            scrollSpacer.style.height=(TOTAL_FRAMES*4)+'vh';
+            console.log(`🎬 ${TOTAL_FRAMES} frames | Speed: 4x`);
         }
 
         function drawFrame(idx){

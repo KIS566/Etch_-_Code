@@ -6,532 +6,210 @@
     <title>EduTech | Future of Learning</title>
     <style>
         :root {
-            --bg: #06060e;
-            --surface: #0e0e1a;
-            --accent: #7c5cfc;
-            --accent2: #00e5cc;
-            --accent3: #ff6b9d;
-            --text: #e8e8f0;
-            --text-secondary: #9090a8;
-            --glass: rgba(14, 14, 26, 0.85);
-            --border: rgba(255, 255, 255, 0.05);
+            --bg: #06060e; --surface: #0e0e1a; --accent: #7c5cfc;
+            --accent2: #00e5cc; --text: #e8e8f0; --text-secondary: #9090a8;
+            --glass: rgba(14,14,26,0.85); --border: rgba(255,255,255,0.05);
             --gradient-1: linear-gradient(135deg, #7c5cfc, #b47cff);
-            --gradient-2: linear-gradient(135deg, #00e5cc, #5effe7);
-            --gradient-3: linear-gradient(135deg, #ff6b9d, #ff9eb5);
         }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        html { scroll-behavior: auto; }
-
+        * { margin:0; padding:0; box-sizing:border-box; }
+        html { scroll-behavior:auto; }
         body {
-            background: var(--bg);
-            font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
-            color: var(--text);
-            overflow-x: hidden;
-            -webkit-font-smoothing: antialiased;
+            background:var(--bg); font-family:'Inter','Segoe UI',system-ui,sans-serif;
+            color:var(--text); overflow-x:hidden; -webkit-font-smoothing:antialiased;
         }
-
         .canvas-fullscreen {
-            position: fixed; top: 0; left: 0;
-            width: 100vw; height: 100vh;
-            z-index: 1; pointer-events: none;
+            position:fixed; top:0; left:0; width:100vw; height:100vh;
+            z-index:1; pointer-events:none;
         }
-
-        canvas { width: 100%; height: 100%; object-fit: cover; }
-
+        canvas { width:100%; height:100%; object-fit:cover; }
         .ambient-light {
-            position: fixed; border-radius: 50%;
-            filter: blur(120px); pointer-events: none;
-            z-index: 0; opacity: 0.3; transition: all 0.8s ease;
+            position:fixed; border-radius:50%; filter:blur(120px);
+            pointer-events:none; z-index:0; opacity:0.3; transition:all 0.8s ease;
         }
-
-        .ambient-1 {
-            width: 500px; height: 500px;
-            background: radial-gradient(circle, rgba(124,92,252,0.5), transparent);
-            top: -200px; left: -100px;
-        }
-
-        .ambient-2 {
-            width: 400px; height: 400px;
-            background: radial-gradient(circle, rgba(0,229,204,0.4), transparent);
-            bottom: -150px; right: -100px;
-        }
-
-        .ambient-3 {
-            width: 300px; height: 300px;
-            background: radial-gradient(circle, rgba(255,107,157,0.3), transparent);
-            top: 50%; left: 50%; transform: translate(-50%, -50%);
-        }
-
+        .ambient-1 { width:500px; height:500px; background:radial-gradient(circle, rgba(124,92,252,0.5), transparent); top:-200px; left:-100px; }
+        .ambient-2 { width:400px; height:400px; background:radial-gradient(circle, rgba(0,229,204,0.4), transparent); bottom:-150px; right:-100px; }
+        .ambient-3 { width:300px; height:300px; background:radial-gradient(circle, rgba(255,107,157,0.3), transparent); top:50%; left:50%; transform:translate(-50%,-50%); }
         .minimal-overlay {
-            position: fixed; bottom: 40px; left: 50%;
-            transform: translateX(-50%); z-index: 10;
-            pointer-events: none; display: flex;
-            align-items: center; gap: 20px;
+            position:fixed; bottom:40px; left:50%; transform:translateX(-50%);
+            z-index:10; pointer-events:none; display:flex; align-items:center; gap:20px;
         }
-
-        .frame-display-minimal {
-            display: flex; align-items: baseline;
-            gap: 3px; opacity: 0.5;
-        }
-
-        .frame-current-minimal {
-            font-size: 14px; font-weight: 600;
-            color: rgba(255,255,255,0.8); letter-spacing: 2px;
-            font-family: 'SF Mono', 'Consolas', monospace;
-        }
-
-        .frame-sep-minimal { color: rgba(255,255,255,0.3); font-size: 12px; }
-
-        .frame-total-minimal {
-            font-size: 12px; color: rgba(255,255,255,0.3); letter-spacing: 1px;
-        }
-
-        .progress-line-minimal {
-            width: 120px; height: 1px;
-            background: rgba(255,255,255,0.1);
-            position: relative; overflow: hidden;
-        }
-
-        .progress-line-fill {
-            height: 100%; background: var(--accent2);
-            transition: width 0.1s linear;
-            box-shadow: 0 0 8px rgba(0,229,204,0.4);
-        }
-
-        .scroll-spacer {
-            position: relative; z-index: 2; pointer-events: auto;
-        }
-
+        .frame-display-minimal { display:flex; align-items:baseline; gap:3px; opacity:0.5; }
+        .frame-current-minimal { font-size:14px; font-weight:600; color:rgba(255,255,255,0.8); letter-spacing:2px; font-family:monospace; }
+        .frame-sep-minimal { color:rgba(255,255,255,0.3); font-size:12px; }
+        .frame-total-minimal { font-size:12px; color:rgba(255,255,255,0.3); letter-spacing:1px; }
+        .progress-line-minimal { width:120px; height:1px; background:rgba(255,255,255,0.1); overflow:hidden; }
+        .progress-line-fill { height:100%; background:var(--accent2); transition:width 0.1s linear; box-shadow:0 0 8px rgba(0,229,204,0.4); }
+        .scroll-spacer { position:relative; z-index:2; pointer-events:auto; }
         .website-content {
-            position: relative; z-index: 5; background: var(--surface);
-            opacity: 0; visibility: hidden;
-            transition: opacity 0.8s cubic-bezier(0.4,0,0.2,1), visibility 0.8s;
+            position:relative; z-index:5; background:var(--surface);
+            opacity:0; visibility:hidden; transition:opacity 0.8s, visibility 0.8s;
         }
-
-        .website-content.revealed { opacity: 1; visibility: visible; }
-
+        .website-content.revealed { opacity:1; visibility:visible; }
         .navbar {
-            position: sticky; top: 0; z-index: 100;
-            background: rgba(6,6,14,0.9); backdrop-filter: blur(30px);
-            border-bottom: 1px solid var(--border); padding: 0 60px;
+            position:sticky; top:0; z-index:100; background:rgba(6,6,14,0.9);
+            backdrop-filter:blur(30px); border-bottom:1px solid var(--border); padding:0 60px;
         }
-
-        .navbar-inner {
-            max-width: 1400px; margin: 0 auto;
-            display: flex; align-items: center;
-            justify-content: space-between; height: 80px;
-        }
-
-        .nav-brand {
-            display: flex; align-items: center; gap: 12px;
-            font-size: 1.4rem; font-weight: 700; letter-spacing: -0.5px;
-        }
-
-        .nav-brand-dot {
-            width: 10px; height: 10px; background: var(--accent2);
-            border-radius: 50%;
-            box-shadow: 0 0 15px rgba(0,229,204,0.6);
-            animation: brandGlow 2s ease-in-out infinite;
-        }
-
-        @keyframes brandGlow {
-            0%,100% { box-shadow: 0 0 10px rgba(0,229,204,0.4); }
-            50% { box-shadow: 0 0 25px rgba(0,229,204,0.8), 0 0 50px rgba(0,229,204,0.3); }
-        }
-
-        .nav-brand span {
-            background: var(--gradient-1);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .nav-menu { display: flex; gap: 40px; list-style: none; align-items: center; }
-
-        .nav-menu a {
-            color: var(--text-secondary); text-decoration: none;
-            font-size: 13px; font-weight: 500; letter-spacing: 1px;
-            text-transform: uppercase; transition: color 0.3s;
-        }
-
-        .nav-menu a:hover { color: #fff; }
-
-        .nav-cta-btn {
-            background: var(--gradient-1); padding: 12px 28px;
-            border-radius: 50px; color: #fff !important;
-            font-weight: 600 !important; letter-spacing: 0.5px !important;
-            transition: all 0.3s !important;
-            box-shadow: 0 8px 25px rgba(124,92,252,0.3);
-        }
-
-        .nav-cta-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 12px 35px rgba(124,92,252,0.5) !important;
-        }
-
-        .mobile-toggle { display: none; background: none; border: none; cursor: pointer; padding: 10px; }
-
-        .mobile-toggle span {
-            display: block; width: 24px; height: 2px;
-            background: #fff; margin: 5px 0;
-            transition: all 0.3s; border-radius: 2px;
-        }
-
-        .section { padding: 120px 60px; }
-        .section-container { max-width: 1400px; margin: 0 auto; }
-
-        .section-eyebrow {
-            font-size: 11px; letter-spacing: 4px; text-transform: uppercase;
-            color: var(--accent); margin-bottom: 20px; font-weight: 600;
-        }
-
-        .section-heading {
-            font-size: clamp(2.5rem, 5vw, 4.5rem); font-weight: 800;
-            margin-bottom: 25px; line-height: 1.1; letter-spacing: -1px;
-        }
-
-        .section-subtitle {
-            color: var(--text-secondary); font-size: 1.15rem;
-            max-width: 650px; line-height: 1.8; margin-bottom: 60px;
-        }
-
-        .courses-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 35px; }
-
-        .course-card {
-            background: var(--glass); border: 1px solid var(--border);
-            border-radius: 24px; padding: 50px 40px;
-            transition: all 0.5s cubic-bezier(0.4,0,0.2,1);
-            position: relative; overflow: hidden; cursor: pointer;
-            backdrop-filter: blur(10px);
-        }
-
-        .course-card:hover {
-            transform: translateY(-12px);
-            border-color: rgba(124,92,252,0.4);
-            box-shadow: 0 30px 60px rgba(0,0,0,0.4), 0 0 40px rgba(124,92,252,0.1);
-        }
-
-        .course-icon-box {
-            width: 65px; height: 65px; border-radius: 18px;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 30px; margin-bottom: 30px;
-        }
-
-        .icon-purple { background: rgba(124,92,252,0.15); }
-        .icon-teal { background: rgba(0,229,204,0.15); }
-        .icon-pink { background: rgba(255,107,157,0.15); }
-
-        .course-card h3 { font-size: 1.5rem; margin-bottom: 15px; font-weight: 700; }
-        .course-card p { color: var(--text-secondary); line-height: 1.7; font-size: 0.95rem; margin-bottom: 25px; }
-        .course-tags { display: flex; gap: 15px; font-size: 12px; color: var(--text-secondary); letter-spacing: 0.5px; }
-
-        .stats-section { background: var(--bg); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 50px; text-align: center; }
-
-        .stat-value {
-            font-size: 4rem; font-weight: 900;
-            background: var(--gradient-1);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            background-clip: text; line-height: 1; margin-bottom: 12px; letter-spacing: -2px;
-        }
-
-        .stat-name { color: var(--text-secondary); font-size: 13px; letter-spacing: 2px; text-transform: uppercase; font-weight: 500; }
-
-        .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 35px; }
-
-        .feature-card {
-            text-align: center; padding: 50px 30px;
-            background: var(--glass); border: 1px solid var(--border);
-            border-radius: 24px; transition: all 0.4s ease;
-            backdrop-filter: blur(10px);
-        }
-
-        .feature-card:hover {
-            border-color: rgba(124,92,252,0.3); transform: translateY(-8px);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-        }
-
-        .feature-icon-circle {
-            width: 80px; height: 80px; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 35px; margin: 0 auto 25px;
-            background: rgba(124,92,252,0.1); border: 1px solid rgba(124,92,252,0.2);
-        }
-
-        .feature-card h3 { margin-bottom: 12px; font-weight: 700; font-size: 1.2rem; }
-        .feature-card p { color: var(--text-secondary); font-size: 0.9rem; line-height: 1.7; }
-
-        .cta-section { text-align: center; background: var(--bg); }
-
-        .cta-wrapper {
-            background: var(--glass); border: 1px solid var(--border);
-            border-radius: 30px; padding: 80px 50px; max-width: 900px;
-            margin: 0 auto; position: relative; overflow: hidden;
-            backdrop-filter: blur(10px);
-        }
-
-        .cta-wrapper::before {
-            content: ''; position: absolute; top: -50%; left: -50%;
-            width: 200%; height: 200%;
-            background: radial-gradient(circle, rgba(124,92,252,0.08) 0%, transparent 60%);
-            animation: slowRotate 25s linear infinite;
-        }
-
-        @keyframes slowRotate { to { transform: rotate(360deg); } }
-        .cta-wrapper > * { position: relative; z-index: 1; }
-
-        .btn-primary {
-            display: inline-block; background: var(--gradient-1); color: #fff;
-            padding: 16px 40px; border-radius: 50px; text-decoration: none;
-            font-weight: 600; font-size: 16px; transition: all 0.3s;
-            border: none; cursor: pointer; letter-spacing: 0.5px;
-            box-shadow: 0 10px 30px rgba(124,92,252,0.3);
-        }
-
-        .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 15px 45px rgba(124,92,252,0.5); }
-
-        .footer { background: var(--bg); border-top: 1px solid var(--border); padding: 50px 60px; text-align: center; }
-        .footer-nav { display: flex; gap: 40px; justify-content: center; margin-bottom: 25px; flex-wrap: wrap; }
-        .footer-nav a { color: var(--text-secondary); text-decoration: none; font-size: 13px; letter-spacing: 1px; transition: color 0.3s; }
-        .footer-nav a:hover { color: #fff; }
-        .footer-text { color: rgba(255,255,255,0.2); font-size: 12px; letter-spacing: 1px; }
-
-        .loading-screen {
-            position: fixed; inset: 0; background: var(--bg); z-index: 9999;
-            display: flex; flex-direction: column; align-items: center;
-            justify-content: center; transition: opacity 0.6s ease, visibility 0.6s;
-        }
-
-        .loading-screen.done { opacity: 0; visibility: hidden; pointer-events: none; }
-
-        .loading-ring {
-            width: 45px; height: 45px;
-            border: 2px solid rgba(255,255,255,0.08);
-            border-top-color: var(--accent); border-radius: 50%;
-            animation: spin 1.2s linear infinite;
-        }
-
-        @keyframes spin { to { transform: rotate(360deg); } }
-
-        .loading-status {
-            color: rgba(255,255,255,0.5); margin-top: 20px;
-            font-size: 11px; letter-spacing: 3px; text-transform: uppercase;
-        }
-
-        .loading-count { color: var(--accent2); margin-top: 8px; font-size: 13px; font-weight: 600; }
-
-        .debug-info {
-            position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%);
-            z-index: 10; pointer-events: none; background: rgba(0,0,0,0.8);
-            color: #0f0; padding: 8px 16px; border-radius: 20px;
-            font-size: 11px; font-family: monospace; opacity: 0; transition: opacity 0.3s;
-        }
-
-        .debug-info.show { opacity: 1; }
-
-        @media (max-width: 1024px) {
-            .navbar { padding: 0 30px; }
-            .section { padding: 80px 30px; }
-            .courses-grid { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
-        }
-
-        @media (max-width: 768px) {
-            .navbar-inner { height: 65px; }
-            .nav-menu {
-                display: none; position: absolute; top: 65px; left: 0; right: 0;
-                background: rgba(6,6,14,0.98); flex-direction: column;
-                padding: 30px; gap: 25px; border-bottom: 1px solid var(--border);
-                backdrop-filter: blur(20px);
-            }
-            .nav-menu.open { display: flex; }
-            .mobile-toggle { display: block; }
-            .section { padding: 60px 20px; }
-            .section-heading { font-size: 2rem; }
-            .courses-grid, .features-grid { grid-template-columns: 1fr; }
-            .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 30px; }
-            .stat-value { font-size: 2.8rem; }
-            .cta-wrapper { padding: 50px 25px; border-radius: 20px; }
-            .minimal-overlay { bottom: 25px; }
-        }
-
-        @media (max-width: 480px) {
-            .section-heading { font-size: 1.6rem; }
-            .stat-value { font-size: 2.2rem; }
-            .minimal-overlay { gap: 10px; }
-            .progress-line-minimal { width: 60px; }
+        .navbar-inner { max-width:1400px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; height:80px; }
+        .nav-brand { display:flex; align-items:center; gap:12px; font-size:1.4rem; font-weight:700; }
+        .nav-brand-dot { width:10px; height:10px; background:var(--accent2); border-radius:50%; box-shadow:0 0 15px rgba(0,229,204,0.6); animation:brandGlow 2s ease-in-out infinite; }
+        @keyframes brandGlow { 0%,100%{ box-shadow:0 0 10px rgba(0,229,204,0.4); } 50%{ box-shadow:0 0 25px rgba(0,229,204,0.8); } }
+        .nav-brand span { background:var(--gradient-1); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+        .nav-menu { display:flex; gap:40px; list-style:none; align-items:center; }
+        .nav-menu a { color:var(--text-secondary); text-decoration:none; font-size:13px; font-weight:500; letter-spacing:1px; text-transform:uppercase; transition:color 0.3s; }
+        .nav-menu a:hover { color:#fff; }
+        .nav-cta-btn { background:var(--gradient-1); padding:12px 28px; border-radius:50px; color:#fff!important; font-weight:600!important; transition:all 0.3s!important; box-shadow:0 8px 25px rgba(124,92,252,0.3); }
+        .nav-cta-btn:hover { transform:translateY(-2px); box-shadow:0 12px 35px rgba(124,92,252,0.5)!important; }
+        .mobile-toggle { display:none; background:none; border:none; cursor:pointer; padding:10px; }
+        .mobile-toggle span { display:block; width:24px; height:2px; background:#fff; margin:5px 0; border-radius:2px; }
+        .section { padding:120px 60px; }
+        .section-container { max-width:1400px; margin:0 auto; }
+        .section-eyebrow { font-size:11px; letter-spacing:4px; text-transform:uppercase; color:var(--accent); margin-bottom:20px; font-weight:600; }
+        .section-heading { font-size:clamp(2.5rem,5vw,4.5rem); font-weight:800; margin-bottom:25px; line-height:1.1; }
+        .section-subtitle { color:var(--text-secondary); font-size:1.15rem; max-width:650px; line-height:1.8; margin-bottom:60px; }
+        .courses-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(360px,1fr)); gap:35px; }
+        .course-card { background:var(--glass); border:1px solid var(--border); border-radius:24px; padding:50px 40px; transition:all 0.5s; cursor:pointer; backdrop-filter:blur(10px); }
+        .course-card:hover { transform:translateY(-12px); border-color:rgba(124,92,252,0.4); box-shadow:0 30px 60px rgba(0,0,0,0.4); }
+        .course-icon-box { width:65px; height:65px; border-radius:18px; display:flex; align-items:center; justify-content:center; font-size:30px; margin-bottom:30px; }
+        .icon-purple{background:rgba(124,92,252,0.15)} .icon-teal{background:rgba(0,229,204,0.15)} .icon-pink{background:rgba(255,107,157,0.15)}
+        .course-card h3{font-size:1.5rem;margin-bottom:15px;font-weight:700}
+        .course-card p{color:var(--text-secondary);line-height:1.7;font-size:0.95rem;margin-bottom:25px}
+        .course-tags{display:flex;gap:15px;font-size:12px;color:var(--text-secondary)}
+        .stats-section{background:var(--bg);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+        .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:50px;text-align:center}
+        .stat-value{font-size:4rem;font-weight:900;background:var(--gradient-1);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;margin-bottom:12px}
+        .stat-name{color:var(--text-secondary);font-size:13px;letter-spacing:2px;text-transform:uppercase;font-weight:500}
+        .features-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:35px}
+        .feature-card{text-align:center;padding:50px 30px;background:var(--glass);border:1px solid var(--border);border-radius:24px;transition:all 0.4s;backdrop-filter:blur(10px)}
+        .feature-card:hover{border-color:rgba(124,92,252,0.3);transform:translateY(-8px)}
+        .feature-icon-circle{width:80px;height:80px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:35px;margin:0 auto 25px;background:rgba(124,92,252,0.1);border:1px solid rgba(124,92,252,0.2)}
+        .feature-card h3{margin-bottom:12px;font-weight:700;font-size:1.2rem}
+        .feature-card p{color:var(--text-secondary);font-size:0.9rem;line-height:1.7}
+        .cta-section{text-align:center;background:var(--bg)}
+        .cta-wrapper{background:var(--glass);border:1px solid var(--border);border-radius:30px;padding:80px 50px;max-width:900px;margin:0 auto;position:relative;overflow:hidden;backdrop-filter:blur(10px)}
+        .cta-wrapper::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(circle,rgba(124,92,252,0.08) 0%,transparent 60%);animation:slowRotate 25s linear infinite}
+        @keyframes slowRotate{to{transform:rotate(360deg)}}
+        .cta-wrapper>*{position:relative;z-index:1}
+        .btn-primary{display:inline-block;background:var(--gradient-1);color:#fff;padding:16px 40px;border-radius:50px;text-decoration:none;font-weight:600;font-size:16px;transition:all 0.3s;box-shadow:0 10px 30px rgba(124,92,252,0.3)}
+        .btn-primary:hover{transform:translateY(-3px);box-shadow:0 15px 45px rgba(124,92,252,0.5)}
+        .footer{background:var(--bg);border-top:1px solid var(--border);padding:50px 60px;text-align:center}
+        .footer-nav{display:flex;gap:40px;justify-content:center;margin-bottom:25px;flex-wrap:wrap}
+        .footer-nav a{color:var(--text-secondary);text-decoration:none;font-size:13px;transition:color 0.3s}
+        .footer-nav a:hover{color:#fff}
+        .footer-text{color:rgba(255,255,255,0.2);font-size:12px}
+        .loading-screen{position:fixed;inset:0;background:var(--bg);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity 0.6s,visibility 0.6s}
+        .loading-screen.done{opacity:0;visibility:hidden;pointer-events:none}
+        .loading-ring{width:45px;height:45px;border:2px solid rgba(255,255,255,0.08);border-top-color:var(--accent);border-radius:50%;animation:spin 1.2s linear infinite}
+        @keyframes spin{to{transform:rotate(360deg)}}
+        .loading-status{color:rgba(255,255,255,0.5);margin-top:20px;font-size:11px;letter-spacing:3px;text-transform:uppercase}
+        .loading-count{color:var(--accent2);margin-top:8px;font-size:13px;font-weight:600}
+        @media(max-width:768px){
+            .navbar{padding:0 30px}.navbar-inner{height:65px}
+            .nav-menu{display:none;position:absolute;top:65px;left:0;right:0;background:rgba(6,6,14,0.98);flex-direction:column;padding:30px;gap:25px;border-bottom:1px solid var(--border)}
+            .nav-menu.open{display:flex}.mobile-toggle{display:block}
+            .section{padding:60px 20px}.section-heading{font-size:2rem}
+            .courses-grid,.features-grid{grid-template-columns:1fr}
+            .stats-grid{grid-template-columns:repeat(2,1fr);gap:30px}.stat-value{font-size:2.8rem}
+            .cta-wrapper{padding:50px 25px;border-radius:20px}.minimal-overlay{bottom:25px}
         }
     </style>
 </head>
 <body>
-    <!-- Debug Info -->
-    <div class="debug-info" id="debugInfo"></div>
+    <!-- ⭐ SIMPLE STATUS DISPLAY -->
+    <div style="position:fixed;top:20px;left:50%;transform:translateX(-50%);z-index:9999;background:rgba(0,0,0,0.8);color:#0f0;padding:10px 20px;border-radius:20px;font-family:monospace;font-size:12px;pointer-events:none" id="statusBar">⏳ Loading...</div>
 
-    <!-- Loading Screen -->
     <div class="loading-screen" id="loadingScreen">
         <div class="loading-ring"></div>
         <div class="loading-status">Loading Frames</div>
         <div class="loading-count" id="loadingCount">Please wait...</div>
     </div>
 
-    <!-- Ambient Lights -->
     <div class="ambient-light ambient-1"></div>
     <div class="ambient-light ambient-2"></div>
     <div class="ambient-light ambient-3"></div>
 
-    <!-- Full Screen Canvas -->
-    <div class="canvas-fullscreen">
-        <canvas id="mainCanvas"></canvas>
-    </div>
+    <div class="canvas-fullscreen"><canvas id="mainCanvas"></canvas></div>
 
-    <!-- Minimal Overlay -->
     <div class="minimal-overlay" id="minimalOverlay">
         <div class="frame-display-minimal">
             <span class="frame-current-minimal" id="frameCurr">01</span>
             <span class="frame-sep-minimal">/</span>
             <span class="frame-total-minimal" id="frameTotal">--</span>
         </div>
-        <div class="progress-line-minimal">
-            <div class="progress-line-fill" id="progressLine" style="width: 0%"></div>
-        </div>
+        <div class="progress-line-minimal"><div class="progress-line-fill" id="progressLine" style="width:0%"></div></div>
     </div>
 
-    <!-- Spacer -->
     <div class="scroll-spacer" id="scrollSpacer"></div>
 
-    <!-- Website Content -->
     <div class="website-content" id="websiteContent">
-        <nav class="navbar" id="navbar">
+        <nav class="navbar">
             <div class="navbar-inner">
-                <div class="nav-brand">
-                    <div class="nav-brand-dot"></div>
-                    Edu<span>Tech</span>
-                </div>
+                <div class="nav-brand"><div class="nav-brand-dot"></div>Edu<span>Tech</span></div>
                 <ul class="nav-menu" id="navMenu">
                     <li><a href="#courses">Courses</a></li>
                     <li><a href="#features">Features</a></li>
                     <li><a href="#stats">Stats</a></li>
                     <li><a href="#contact" class="nav-cta-btn">Get Started</a></li>
                 </ul>
-                <button class="mobile-toggle" id="mobileToggle">
-                    <span></span><span></span><span></span>
-                </button>
+                <button class="mobile-toggle" id="mobileToggle"><span></span><span></span><span></span></button>
             </div>
         </nav>
 
-        <section class="section" id="courses">
-            <div class="section-container">
-                <div class="section-eyebrow">Featured Courses</div>
-                <h2 class="section-heading">Master the skills that matter.</h2>
-                <p class="section-subtitle">Industry-relevant curriculum designed by experts.</p>
-                <div class="courses-grid">
-                    <div class="course-card">
-                        <div class="course-icon-box icon-purple">🎨</div>
-                        <h3>Web Design & Development</h3>
-                        <p>Create stunning, responsive websites with modern tools.</p>
-                        <div class="course-tags">
-                            <span>📚 12 Modules</span><span>⏱️ 24h</span><span>⭐ 4.9</span>
-                        </div>
-                    </div>
-                    <div class="course-card">
-                        <div class="course-icon-box icon-teal">📊</div>
-                        <h3>Data Science & Analytics</h3>
-                        <p>Transform data into decisions with Python and SQL.</p>
-                        <div class="course-tags">
-                            <span>📚 10 Modules</span><span>⏱️ 20h</span><span>⭐ 4.8</span>
-                        </div>
-                    </div>
-                    <div class="course-card">
-                        <div class="course-icon-box icon-pink">🤖</div>
-                        <h3>AI & Machine Learning</h3>
-                        <p>Build intelligent systems with neural networks.</p>
-                        <div class="course-tags">
-                            <span>📚 15 Modules</span><span>⏱️ 30h</span><span>⭐ 4.9</span>
-                        </div>
-                    </div>
-                </div>
+        <section class="section" id="courses"><div class="section-container">
+            <div class="section-eyebrow">Featured Courses</div>
+            <h2 class="section-heading">Master the skills that matter.</h2>
+            <p class="section-subtitle">Industry-relevant curriculum designed by experts.</p>
+            <div class="courses-grid">
+                <div class="course-card"><div class="course-icon-box icon-purple">🎨</div><h3>Web Design</h3><p>Create stunning websites with modern tools.</p><div class="course-tags"><span>📚 12 Modules</span><span>⏱️ 24h</span><span>⭐ 4.9</span></div></div>
+                <div class="course-card"><div class="course-icon-box icon-teal">📊</div><h3>Data Science</h3><p>Transform data into decisions with Python.</p><div class="course-tags"><span>📚 10 Modules</span><span>⏱️ 20h</span><span>⭐ 4.8</span></div></div>
+                <div class="course-card"><div class="course-icon-box icon-pink">🤖</div><h3>AI & ML</h3><p>Build intelligent systems with neural networks.</p><div class="course-tags"><span>📚 15 Modules</span><span>⏱️ 30h</span><span>⭐ 4.9</span></div></div>
             </div>
-        </section>
+        </div></section>
 
-        <section class="section stats-section" id="stats">
-            <div class="section-container">
-                <div class="stats-grid">
-                    <div><div class="stat-value">50K+</div><div class="stat-name">Students</div></div>
-                    <div><div class="stat-value">200+</div><div class="stat-name">Instructors</div></div>
-                    <div><div class="stat-value">95%</div><div class="stat-name">Success Rate</div></div>
-                    <div><div class="stat-value">4.9</div><div class="stat-name">Rating</div></div>
-                </div>
+        <section class="section stats-section"><div class="section-container">
+            <div class="stats-grid">
+                <div><div class="stat-value">50K+</div><div class="stat-name">Students</div></div>
+                <div><div class="stat-value">200+</div><div class="stat-name">Instructors</div></div>
+                <div><div class="stat-value">95%</div><div class="stat-name">Success Rate</div></div>
+                <div><div class="stat-value">4.9</div><div class="stat-name">Rating</div></div>
             </div>
-        </section>
+        </div></section>
 
-        <section class="section" id="features">
-            <div class="section-container">
-                <div class="section-eyebrow">Why EduTech</div>
-                <h2 class="section-heading">Learning, reimagined.</h2>
-                <p class="section-subtitle">A platform built for the modern learner.</p>
-                <div class="features-grid">
-                    <div class="feature-card">
-                        <div class="feature-icon-circle">🎯</div>
-                        <h3>Visual First</h3>
-                        <p>Complex concepts explained through stunning animations.</p>
-                    </div>
-                    <div class="feature-card">
-                        <div class="feature-icon-circle">⚡</div>
-                        <h3>Self Paced</h3>
-                        <p>Learn at your own speed with interactive content.</p>
-                    </div>
-                    <div class="feature-card">
-                        <div class="feature-icon-circle">📱</div>
-                        <h3>Any Device</h3>
-                        <p>Seamless experience across all your screens.</p>
-                    </div>
-                    <div class="feature-card">
-                        <div class="feature-icon-circle">🏆</div>
-                        <h3>Certified</h3>
-                        <p>Earn credentials that employers recognize.</p>
-                    </div>
-                </div>
+        <section class="section" id="features"><div class="section-container">
+            <div class="section-eyebrow">Why EduTech</div>
+            <h2 class="section-heading">Learning, reimagined.</h2>
+            <p class="section-subtitle">A platform built for the modern learner.</p>
+            <div class="features-grid">
+                <div class="feature-card"><div class="feature-icon-circle">🎯</div><h3>Visual First</h3><p>Complex concepts through stunning animations.</p></div>
+                <div class="feature-card"><div class="feature-icon-circle">⚡</div><h3>Self Paced</h3><p>Learn at your own speed.</p></div>
+                <div class="feature-card"><div class="feature-icon-circle">📱</div><h3>Any Device</h3><p>Seamless across all screens.</p></div>
+                <div class="feature-card"><div class="feature-icon-circle">🏆</div><h3>Certified</h3><p>Industry-recognized credentials.</p></div>
             </div>
-        </section>
+        </div></section>
 
-        <section class="section cta-section" id="contact">
-            <div class="section-container">
-                <div class="cta-wrapper">
-                    <div class="section-eyebrow">Begin Your Journey</div>
-                    <h2 class="section-heading">Ready to level up?</h2>
-                    <p class="section-subtitle" style="margin:0 auto 35px;max-width:500px;">Join thousands already transforming their careers.</p>
-                    <a href="#" class="btn-primary">Start Learning Free →</a>
-                </div>
+        <section class="section cta-section"><div class="section-container">
+            <div class="cta-wrapper">
+                <div class="section-eyebrow">Begin Your Journey</div>
+                <h2 class="section-heading">Ready to level up?</h2>
+                <p class="section-subtitle" style="margin:0 auto 35px;max-width:500px">Join thousands transforming their careers.</p>
+                <a href="#" class="btn-primary">Start Learning Free →</a>
             </div>
-        </section>
+        </div></section>
 
         <footer class="footer">
-            <div class="footer-nav">
-                <a href="#">Privacy</a><a href="#">Terms</a><a href="#">Contact</a><a href="#">FAQ</a>
-            </div>
-            <p class="footer-text">© 2026 EduTech. Crafted with precision.</p>
+            <div class="footer-nav"><a href="#">Privacy</a><a href="#">Terms</a><a href="#">Contact</a><a href="#">FAQ</a></div>
+            <p class="footer-text">© 2026 EduTech</p>
         </footer>
     </div>
 
     <script>
-        // ============ COMPLETELY SUPPRESS 404 ERRORS ============
-        const originalError = console.error;
-        console.error = function(...args) {
-            const msg = args.join(' ');
-            if (msg.includes('404') || msg.includes('NOT FOUND') || msg.includes('Failed to load')) {
-                return;
-            }
-            originalError.apply(console, args);
-        };
+        // ⭐ ZERO ERRORS - Sab kuch suppress
+        const origErr = console.error;
+        console.error = function(...a){ const m=a.join(' '); if(!m.includes('404')&&!m.includes('NOT FOUND')) origErr.apply(console,a); };
+        window.addEventListener('error', e => { if(e.target?.tagName==='IMG'){ e.preventDefault(); e.stopPropagation(); return false; } }, true);
 
-        window.addEventListener('error', function(e) {
-            if (e.target && e.target.tagName === 'IMG') {
-                e.preventDefault();
-                e.stopPropagation();
-                return false;
-            }
-        }, true);
+        const statusBar = document.getElementById('statusBar');
+        function status(msg) { statusBar.textContent = msg; }
 
-        // ============ DOM ============
         const canvas = document.getElementById('mainCanvas');
         const ctx = canvas.getContext('2d');
         const loadingScreen = document.getElementById('loadingScreen');
@@ -542,237 +220,151 @@
         const progressLine = document.getElementById('progressLine');
         const frameCurr = document.getElementById('frameCurr');
         const frameTotal = document.getElementById('frameTotal');
-        const debugInfo = document.getElementById('debugInfo');
 
-        function showDebug(msg) {
-            debugInfo.textContent = msg;
-            debugInfo.classList.add('show');
-            setTimeout(() => debugInfo.classList.remove('show'), 3000);
-        }
-
-        // ============ CANVAS ============
-        function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        }
+        function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
         resizeCanvas();
-        window.addEventListener('resize', () => {
-            resizeCanvas();
-            if (frames.length > 0) drawFrame(currentFrame);
-        });
+        window.addEventListener('resize', () => { resizeCanvas(); if(frames.length>0) drawFrame(currentFrame); });
 
-        // ============ FRAMES ============
         const frames = [];
-        let TOTAL_FRAMES = 0;
-        let currentFrame = -1;
+        let TOTAL_FRAMES = 0, currentFrame = -1;
 
-        function createPlaceholder(frameNum, totalFrames) {
-            const off = document.createElement('canvas');
-            off.width = 1920; off.height = 1080;
-            const oc = off.getContext('2d');
-            const hue = ((frameNum-1)/totalFrames)*360;
-            const grad = oc.createRadialGradient(960,540,80,960,540,1400);
-            grad.addColorStop(0, `hsl(${hue},35%,18%)`);
-            grad.addColorStop(1, `hsl(${hue+40},15%,4%)`);
-            oc.fillStyle = grad;
-            oc.fillRect(0,0,1920,1080);
-            oc.fillStyle = 'rgba(255,255,255,0.6)';
-            oc.font = '300 160px "Inter", sans-serif';
-            oc.textAlign = 'center';
-            oc.textBaseline = 'middle';
-            oc.fillText(frameNum.toString().padStart(2,'0'), 960, 540);
-            const img = new Image();
-            img.src = off.toDataURL();
-            return img;
+        function createPlaceholder(n, t) {
+            const c = document.createElement('canvas'); c.width=1920; c.height=1080;
+            const o = c.getContext('2d');
+            const h = ((n-1)/t)*360;
+            const g = o.createRadialGradient(960,540,80,960,540,1400);
+            g.addColorStop(0,`hsl(${h},35%,18%)`); g.addColorStop(1,`hsl(${h+40},15%,4%)`);
+            o.fillStyle=g; o.fillRect(0,0,1920,1080);
+            o.fillStyle='rgba(255,255,255,0.6)'; o.font='300 160px Inter,sans-serif';
+            o.textAlign='center'; o.textBaseline='middle';
+            o.fillText(n.toString().padStart(2,'0'),960,540);
+            const img = new Image(); img.src = c.toDataURL(); return img;
         }
 
-        function tryLoadImageSilent(path) {
-            return new Promise((resolve) => {
+        // ⭐ ULTRA SAFE IMAGE LOAD
+        function tryLoad(p) {
+            return new Promise(r => {
                 const img = new Image();
-                let resolved = false;
-                const done = (result) => { if (!resolved) { resolved = true; resolve(result); } };
-                const timeout = setTimeout(() => done(null), 2000);
-                img.onload = () => { clearTimeout(timeout); done(img); };
-                img.onerror = () => { clearTimeout(timeout); done(null); };
-                try { img.src = path; } catch(e) { clearTimeout(timeout); done(null); }
+                let done = false;
+                const ok = (v) => { if(!done) { done=true; r(v); } };
+                const t = setTimeout(() => ok(null), 2000);
+                img.onload = () => { clearTimeout(t); ok(img); };
+                img.onerror = () => { clearTimeout(t); ok(null); };
+                try { img.src = p; } catch(e) { clearTimeout(t); ok(null); }
             });
         }
 
         async function loadAllFrames() {
+            status('🔍 Scanning all formats...');
             loadingCount.textContent = 'Scanning...';
-            showDebug('🔍 Scanning images...');
 
-            // ⭐ GitHub Pages ke liye - saare possible paths try karo
-            const extensions = ['.jpeg', '.jpg', '.png', '.webp'];
-            let bestFrames = [];
+            // ⭐ HAR POSSIBLE COMBINATION TRY KARO
+            const folders = ['', 'frames/', './', './frames/'];
+            const exts = ['.png', '.jpg', '.jpeg', '.webp', '.PNG', '.JPG', '.JPEG', '.WEBP'];
+            let best = [];
 
-            // ⭐ CONFIG: Apne hisaab se paths add karo
-            const pathPatterns = [
-                // Same folder (root)
-                { prefix: '', ext: '.jpeg', label: 'XX.jpeg (root)' },
-                { prefix: '', ext: '.jpg', label: 'XX.jpg (root)' },
-                { prefix: '', ext: '.png', label: 'XX.png (root)' },
-                // frames/ folder
-                { prefix: 'frames/', ext: '.jpeg', label: 'frames/XX.jpeg' },
-                { prefix: 'frames/', ext: '.jpg', label: 'frames/XX.jpg' },
-                { prefix: 'frames/', ext: '.png', label: 'frames/XX.png' },
-            ];
-
-            for (const pattern of pathPatterns) {
-                const temp = [];
-                let consecutiveMisses = 0;
-
-                for (let i = 1; i <= 200; i++) {
-                    const num = i.toString().padStart(2, '0');
-                    const path = `${pattern.prefix}${num}${pattern.ext}`;
-                    const img = await tryLoadImageSilent(path);
-
-                    if (img) {
-                        temp.push({ index: i, img });
-                        consecutiveMisses = 0;
-                        if (temp.length % 10 === 0) {
-                            loadingCount.textContent = `Found: ${temp.length}`;
+            for (const folder of folders) {
+                for (const ext of exts) {
+                    const temp = [];
+                    let misses = 0;
+                    
+                    for (let i = 1; i <= 200; i++) {
+                        const num = i.toString().padStart(2, '0');
+                        const path = `${folder}${num}${ext}`;
+                        const img = await tryLoad(path);
+                        
+                        if (img) {
+                            temp.push({ index: i, img });
+                            misses = 0;
+                            if (temp.length % 10 === 0) {
+                                status(`✅ Found: ${temp.length} (${ext})`);
+                                loadingCount.textContent = `Found: ${temp.length}`;
+                            }
+                        } else {
+                            misses++;
+                            if (misses >= 5 && temp.length > 0) break;
+                            if (i > 100 && temp.length === 0) break;
                         }
-                    } else {
-                        consecutiveMisses++;
-                        // Stop after 5 consecutive misses
-                        if (consecutiveMisses >= 5 && temp.length > 0) break;
-                        // Stop if 100 tries with nothing
-                        if (i > 100 && temp.length === 0) break;
                     }
+                    
+                    if (temp.length > best.length) {
+                        best = temp;
+                        status(`🎯 Best: ${temp.length} frames [${ext}]`);
+                    }
+                    
+                    if (best.length > 0) break; // Mil gaye to stop
                 }
-
-                if (temp.length > bestFrames.length) {
-                    bestFrames = temp;
-                    showDebug(`✅ ${pattern.label}: ${temp.length} frames`);
-                    console.log(`✅ ${pattern.label}: ${temp.length} frames found`);
-                }
-
-                // Found frames? Stop trying more patterns
-                if (bestFrames.length > 0) break;
+                if (best.length > 0) break;
             }
 
-            if (bestFrames.length > 0) {
-                TOTAL_FRAMES = bestFrames.length;
-                bestFrames.sort((a, b) => a.index - b.index);
-                bestFrames.forEach(f => frames.push(f.img));
+            if (best.length > 0) {
+                TOTAL_FRAMES = best.length;
+                best.sort((a,b) => a.index - b.index);
+                best.forEach(f => frames.push(f.img));
+                status(`✅ Loaded: ${TOTAL_FRAMES} frames!`);
+                console.log(`✅ ${TOTAL_FRAMES} frames loaded successfully!`);
             } else {
                 TOTAL_FRAMES = 10;
-                showDebug('⚠️ No images found - placeholders');
-                for (let i = 1; i <= TOTAL_FRAMES; i++) {
-                    frames.push(createPlaceholder(i, TOTAL_FRAMES));
-                }
+                status('⚠️ No images - using placeholders');
+                console.warn('No images found, using 10 placeholders');
+                for (let i = 1; i <= TOTAL_FRAMES; i++) frames.push(createPlaceholder(i, TOTAL_FRAMES));
             }
 
             loadingCount.textContent = `${TOTAL_FRAMES} / ${TOTAL_FRAMES}`;
             frameTotal.textContent = TOTAL_FRAMES.toString().padStart(2, '0');
-
-            const spacerVH = TOTAL_FRAMES * 4;
-            scrollSpacer.style.height = spacerVH + 'vh';
-
-            console.log(`🎬 ${TOTAL_FRAMES} frames | Spacer: ${spacerVH}vh`);
+            scrollSpacer.style.height = (TOTAL_FRAMES * 4) + 'vh';
+            status(`🎬 ${TOTAL_FRAMES} frames | Spacer: ${TOTAL_FRAMES*4}vh`);
         }
 
-        function drawFrame(index) {
-            if (!frames[index]) return;
-            const img = frames[index];
-            const cw = canvas.width;
-            const ch = canvas.height;
-
-            ctx.clearRect(0, 0, cw, ch);
-            ctx.fillStyle = '#06060e';
-            ctx.fillRect(0, 0, cw, ch);
-
+        function drawFrame(idx) {
+            if (!frames[idx]) return;
+            const img = frames[idx];
+            const cw = canvas.width, ch = canvas.height;
+            ctx.clearRect(0,0,cw,ch);
+            ctx.fillStyle='#06060e'; ctx.fillRect(0,0,cw,ch);
             const ir = img.naturalWidth / img.naturalHeight;
             const cr = cw / ch;
             let dx, dy, dw, dh;
-
-            if (ir > cr) {
-                dw = cw; dh = cw / ir;
-                dx = 0; dy = (ch - dh) / 2;
-            } else {
-                dh = ch; dw = ch * ir;
-                dx = (cw - dw) / 2; dy = 0;
-            }
-
+            if (ir > cr) { dw=cw; dh=cw/ir; dx=0; dy=(ch-dh)/2; }
+            else { dh=ch; dw=ch*ir; dx=(cw-dw)/2; dy=0; }
             ctx.drawImage(img, dx, dy, dw, dh);
-
-            const vig = ctx.createRadialGradient(cw/2, ch/2, cw*0.35, cw/2, ch/2, cw*0.75);
-            vig.addColorStop(0, 'rgba(0,0,0,0)');
-            vig.addColorStop(1, 'rgba(0,0,0,0.55)');
-            ctx.fillStyle = vig;
-            ctx.fillRect(0, 0, cw, ch);
+            const vig = ctx.createRadialGradient(cw/2,ch/2,cw*0.35,cw/2,ch/2,cw*0.75);
+            vig.addColorStop(0,'rgba(0,0,0,0)'); vig.addColorStop(1,'rgba(0,0,0,0.55)');
+            ctx.fillStyle=vig; ctx.fillRect(0,0,cw,ch);
         }
 
-        let contentRevealed = false;
-
-        function updateFromScroll() {
+        let revealed = false;
+        function updateScroll() {
             const st = window.pageYOffset;
-            const sTop = scrollSpacer.offsetTop;
-            const sH = scrollSpacer.offsetHeight;
-            const rel = st - sTop;
-            const progress = Math.max(0, Math.min(1, rel / sH));
-            const idx = Math.min(Math.floor(progress * TOTAL_FRAMES), TOTAL_FRAMES - 1);
-
-            if (idx !== currentFrame && idx >= 0 && idx < TOTAL_FRAMES) {
-                currentFrame = idx;
-                drawFrame(idx);
-                frameCurr.textContent = (idx + 1).toString().padStart(2, '0');
-            }
-
-            progressLine.style.width = (progress * 100) + '%';
-
-            if (progress >= 0.95 && !contentRevealed) {
-                contentRevealed = true;
-                websiteContent.classList.add('revealed');
-                minimalOverlay.style.opacity = '0';
-                setTimeout(() => window.scrollTo({ top: sTop + sH, behavior: 'smooth' }), 150);
-            }
-
-            if (progress < 0.9 && contentRevealed) {
-                contentRevealed = false;
-                websiteContent.classList.remove('revealed');
-                minimalOverlay.style.opacity = '1';
-            }
+            const sTop = scrollSpacer.offsetTop, sH = scrollSpacer.offsetHeight;
+            const prog = Math.max(0, Math.min(1, (st-sTop)/sH));
+            const idx = Math.min(Math.floor(prog*TOTAL_FRAMES), TOTAL_FRAMES-1);
+            if (idx !== currentFrame && idx >= 0) { currentFrame=idx; drawFrame(idx); frameCurr.textContent=(idx+1).toString().padStart(2,'0'); }
+            progressLine.style.width = (prog*100)+'%';
+            if (prog>=0.95 && !revealed) { revealed=true; websiteContent.classList.add('revealed'); minimalOverlay.style.opacity='0'; statusBar.style.opacity='0'; setTimeout(()=>window.scrollTo({top:sTop+sH,behavior:'smooth'}),150); }
+            if (prog<0.9 && revealed) { revealed=false; websiteContent.classList.remove('revealed'); minimalOverlay.style.opacity='1'; statusBar.style.opacity='1'; }
         }
 
-        function onScroll() { updateFromScroll(); }
+        window.addEventListener('scroll', updateScroll, { passive: true });
 
-        const mobileToggle = document.getElementById('mobileToggle');
-        const navMenu = document.getElementById('navMenu');
-        mobileToggle.addEventListener('click', () => navMenu.classList.toggle('open'));
-        navMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => navMenu.classList.remove('open')));
+        const mt = document.getElementById('mobileToggle'), nm = document.getElementById('navMenu');
+        mt.addEventListener('click', () => nm.classList.toggle('open'));
+        nm.querySelectorAll('a').forEach(a => a.addEventListener('click', () => nm.classList.remove('open')));
 
-        function onKey(e) {
-            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
-            const sTop = scrollSpacer.offsetTop;
-            const sH = scrollSpacer.offsetHeight;
-            const step = sH / TOTAL_FRAMES;
-            if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
-                e.preventDefault();
-                if (currentFrame < TOTAL_FRAMES - 1) {
-                    window.scrollTo({ top: sTop + step * (currentFrame + 1) + step * 0.05, behavior: 'smooth' });
-                }
-            } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
-                e.preventDefault();
-                if (currentFrame > 0) {
-                    window.scrollTo({ top: sTop + step * (currentFrame - 1), behavior: 'smooth' });
-                } else {
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                }
-            }
-        }
+        window.addEventListener('keydown', e => {
+            if (e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA') return;
+            const sTop=scrollSpacer.offsetTop, sH=scrollSpacer.offsetHeight, step=sH/TOTAL_FRAMES;
+            if (e.key==='ArrowDown'||e.key==='ArrowRight') { e.preventDefault(); if(currentFrame<TOTAL_FRAMES-1) window.scrollTo({top:sTop+step*(currentFrame+1)+step*0.05,behavior:'smooth'}); }
+            else if (e.key==='ArrowUp'||e.key==='ArrowLeft') { e.preventDefault(); if(currentFrame>0) window.scrollTo({top:sTop+step*(currentFrame-1),behavior:'smooth'}); else window.scrollTo({top:0,behavior:'smooth'}); }
+        });
 
-        async function init() {
+        (async () => {
             await loadAllFrames();
             setTimeout(() => loadingScreen.classList.add('done'), 500);
-            if (frames.length > 0) { drawFrame(0); currentFrame = 0; frameCurr.textContent = '01'; }
-            window.addEventListener('scroll', onScroll, { passive: true });
-            window.addEventListener('keydown', onKey);
-            updateFromScroll();
-        }
-
-        init();
+            if (frames.length>0) { drawFrame(0); currentFrame=0; frameCurr.textContent='01'; }
+            updateScroll();
+            setTimeout(() => { statusBar.style.opacity='0'; }, 5000);
+        })();
     </script>
 </body>
 </html>
